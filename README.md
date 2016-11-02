@@ -6,7 +6,7 @@ matrix for variants in each gene. These summary statistics can be loaded into th
 
 # DOWNLOAD AND INSTALLATION
 ## Download
-The latest version of SUGEN can be from [github](https://github.com/dragontaoran/SUGEN/archive/master.zip) or [github page](https://github.com/dragontaoran/SUGEN).
+The latest version of SUGEN can be downloaded from [github](https://github.com/dragontaoran/SUGEN/archive/master.zip) or [github page](https://github.com/dragontaoran/SUGEN).
 
 ## Installation
 Step 1: Unzip the package.
