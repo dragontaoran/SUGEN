@@ -162,5 +162,6 @@ tabix -p vcf -f vcf_file.gz
 ## Pairwise Inclusion Probability Matrix
 The files that contain the pairwise inclusion probability matrices should be tab-delimited. The 1st row is the header line containing the subject IDs. The remaining rows constitute a symmetric square matrix. That is to say, the number of rows equals the number of columns plus 1 (for the header line). The marginal inclusion probability of the ith subject is in the (i+1)th row and ith column. The pairwise inclusion probability of the ith and jth subjects is in the (i+1)th row and jth column, as well as in the (j+1)th row and ith column. All inclusion probabilities are strictly greater than 0 and less than or equal to 1. Missing values are not permitted. Note that there can be multiple pairwise inclusion probability matrices. Subjects in different pairwise inclusion probability matrices are assumed to be independent. Note that these pairwise inclusion probability matrices are optional in the weighted approach and not needed in the unweighted approach.
 
-## File that Contains the File Names of the Pairwise Inclusion Probability Matrices <span> `prob_file` </span>
-Each row is the file name of one pairwise inclusion probability matrix. Note that this file is optional in the weighted approach and not needed in the unweighted approach.
+## File that Contains the File Names of the Pairwise Inclusion Probability Matrices
+* `prob_file`
+* Each row is the file name of one pairwise inclusion probability matrix. Note that this file is optional in the weighted approach and not needed in the unweighted approach.
