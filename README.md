@@ -173,7 +173,7 @@ only when we perform conditional analysis (i.e., when `--cond cond_file` is spec
 Each row is a gene, which should be in the following format:
 
 
-*gene_1\tvariant_1,variant_2  
-gene_2\tvariant_3,variant_4,variant_5*
+*gene_1 variant_1,variant_2  
+gene_2  variant_3,variant_4,variant_5*
  
 The gene and variant IDs are separated by a tab. The variant IDs in the same gene are separately by commas. Variant IDs should be in *chromosome:position* format. Note that this file is needed only when we perform gene-based analysis (i.e., when `--group group_file` is specified).
