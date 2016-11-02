@@ -173,7 +173,36 @@ only when we perform conditional analysis (i.e., when `--cond cond_file` is spec
 Each row is a gene, which should be in the following format:
 
 
-*gene_1 variant_1,variant_2  
-gene_2  variant_3,variant_4,variant_5*
+    *gene_1 variant_1,variant_2  
+    gene_2  variant_3,variant_4,variant_5*
  
 The gene and variant IDs are separated by a tab. The variant IDs in the same gene are separately by commas. Variant IDs should be in *chromosome:position* format. Note that this file is needed only when we perform gene-based analysis (i.e., when `--group group_file` is specified).
+
+## File that Contains the Subset of Variants to be Analyzed in Single-Variant Analysis
+Each row is a variant ID, which should be in *chromosome:position* format. Note that this file is needed only when --extract-file extract_file is specified.
+
+
+# OUTPUT FILES
+## Wald Statistics
+### Single-Variant Analysis Results
+The rows represent varaints. The first row is the header line. Missing values are denoted by *NA*. Tables 1--3 describe the columns of `prefix.wald.out` in standard association analysis, conditional analysis, and gene-environment interaction analysis, respectively.
+
+| Column Name   | Description                                                        |
+|---------------|--------------------------------------------------------------------|
+| CHROM         | Chromosome.                                                        |
+| POS           | Position.                                                          |
+| VCF_ID        | Varaint ID in the VCF file.                                        |
+| REF           | Reference allele.                                                  |
+| ALT           | Alternative allele.                                                |
+| ALT_AF        | Alternative allele frequency.                                      |
+| ALT_AC        | Alternative allele count.                                          |
+| N_INFORMATIVE | Number of subjects included in the analysis.                       |
+| N_REF         | Number of subjects with two reference alleles.                     |
+| N_HET         | Number of subjects with one reference and one alternative alleles. |
+| N_ALT         | Number of subjects with two alternative alleles.                   |
+| N_DOSE        | Number of subjects with genotype dosages.                          |
+| BETA          | Effect estimate.                                                   |
+| SE            | Standard error estimate of BETA.                                   |
+| PVALUE        | *p*-value.                                                         |
+
+
