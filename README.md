@@ -148,8 +148,19 @@ Specifies the call rate lower bound for gene-based association analysis. `cr_lb`
 
 
 # INPUT FILES
-## Phenotype File `pheno_file`
+## Phenotype File
 The phenotype file should be tab-delimited. Missing data are denoted by *NA*. The rows represent study subjects. The 1st row is the header line. This file should include the subject ID column, family ID column (unless the subjects are independent), weight column (unless the unweighted approach is used, i.e., when `--unweighted` is specified), trait column (with trait values being continuous or binary if `model=linear` or `model=logistic`, respectively), time and event indicator columns (if `model=coxph`), and covariates columns (unless there is no covariate in `formula`). Subjects with missing values in any of the columns specified by `--formula formula`,
 `--id-col iid`, `--family-col fid`, or `--weight-col wt`are excluded from the analysis.
 
-## VCF File `vcf_file.gz`
+## VCF File
+The VCF file contains the genotype data. The format specifications of a VCF file can be found [here](http://www.1000genomes.org/wiki/Analysis/Variant\%20Call\%20Format/vcf-variant-call-format-version-41). The VCF file should be compressed by [bgzip](http://www.htslib.org/doc/tabix.html) and indexed by [tabix](http://www.htslib.org/doc/tabix.html), using the following commands:
+```
+bgzip vcf_file
+tabix -p vcf -f vcf_file.gz  
+```
+
+## Pairwise Inclusion Probability Matrix
+The files that contain the pairwise inclusion probability matrices should be tab-delimited. The 1st row is the header line containing the subject IDs. The remaining rows constitute a symmetric square matrix. That is to say, the number of rows equals the number of columns plus 1 (for the header line). The marginal inclusion probability of the ith subject is in the (i+1)th row and ith column. The pairwise inclusion probability of the ith and jth subjects is in the (i+1)th row and jth column, as well as in the (j+1)th row and ith column. All inclusion probabilities are strictly greater than 0 and less than or equal to 1. Missing values are not permitted. Note that there can be multiple pairwise inclusion probability matrices. Subjects in different pairwise inclusion probability matrices are assumed to be independent. Note that these pairwise inclusion probability matrices are optional in the weighted approach and not needed in the unweighted approach.
+
+## File that Contains the File Names of the Pairwise Inclusion Probability Matrices
+Each row is the file name of one pairwise inclusion probability matrix. Note that this file is optional in the weighted approach and not needed in the unweighted approach.
