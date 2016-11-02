@@ -53,7 +53,7 @@ Specifies the regression formula. In linear or logistic regression, the format o
     "trait=covariate_1+covariate_2+...+covariate_p"
     ```
 
-The trait and covariates must appear in `pheno_file`. If there is no covariate, then we specify the formula as  
+    The trait and covariates must appear in `pheno_file`. If there is no covariate, then we specify the formula as  
 
     ```
     "trait="
