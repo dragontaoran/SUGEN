@@ -10,15 +10,17 @@ matrix for variants in each gene. These summary statistics can be loaded into th
 The latest version of SUGEN can be downloaded from [github](https://github.com/dragontaoran/SUGEN/archive/master.zip) or [github page](https://github.com/dragontaoran/SUGEN).
 
 ## Installation
-Step 1: Unzip the package.
+1. Unzip the package.
 ```sh
   unzip SUGEN-master.zip
 ```
-Step 2: Go to the SUGEN directory.
+
+2. Go to the SUGEN directory.
 ```sh
   cd ./SUGEN-master
 ```
-Step 3: Install SUGEN. When successful, an executable called "SUGEN" will be generated in ./SUGEN-master.
+
+3. Install SUGEN. When successful, an executable called "SUGEN" will be generated in ./SUGEN-master.
 ```sh
   make
 ```
@@ -38,12 +40,14 @@ SUGEN [--pheno pheno_file] [--formula formula] [--id-col iid] [--family-col fid]
 
 # OPTIONS
 ## Input Options
-* ```sh
+* 
+```sh
 --pheno pheno_file
 ```
 Specifies the phenotype file. The default name is *pheno.txt*.
 
-* ```sh
+* 
+```sh
 --formula formula
 ```
 Specifies the regression formula. In linear or logistic regression, the format of {\it formula} is
