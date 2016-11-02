@@ -26,5 +26,11 @@ Step 3: Install SUGEN. When successful, an executable called "SUGEN" will be gen
 
 # SYNOPSIS
 ```sh
-SUGEN [--pheno pheno_file] [--formula formula] [--id-col iid] [--family-col fid] [--weight-col wt] [--vcf vcf_file.gz] [--dosage] [--probmatrix prob_file] [--subset subset_expression] [--unweighted] [--model model] [--robust-variance] [--left-truncation left_truncation_time] [--cond cond_file] [--ge envi_covs] [--score] [--score-rescale rescale_rule] [--group group_file] [--hetero-variance strata] [--out-prefix out_prefix] [--out-zip] [--extract-chr chr] [--extract-range range] [--extract-file extract_file] [--group-maf maf_ub] [--group-callrate cr_lb]
+SUGEN [--pheno pheno_file] [--formula formula] [--id-col iid] [--family-col fid] \
+[--weight-col wt] [--vcf vcf_file.gz] [--dosage] [--probmatrix prob_file] \
+[--subset subset_expression] [--unweighted] [--model model] [--robust-variance] \
+[--left-truncation left_truncation_time] [--cond cond_file] [--ge envi_covs] [--score] \
+[--score-rescale rescale_rule] [--group group_file] [--hetero-variance strata] [--out-prefix out_prefix] \
+[--out-zip] [--extract-chr chr] [--extract-range range] [--extract-file extract_file] \
+[--group-maf maf_ub] [--group-callrate cr_lb]
 ```
