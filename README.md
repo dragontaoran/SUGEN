@@ -12,13 +12,13 @@ The latest version of SUGEN can be from [github](https://github.com/dragontaoran
 
 ```sh
   ## Step 1: Unzip the package.
-  $ unzip sugen.zip
+  $ unzip SUGEN-master.zip
 
   ## Step 2: Go to the SUGEN directory.
-  $ cd ./sugen8_20160929
+  $ cd ./SUGEN
 
   ## Step 3: Install SUGEN.
   $ make
 
-  ## An executable called ``SUGEN'' will be generated in the directory.
+  ## An executable called "SUGEN" will be generated in ./SUGEN.
 ```
