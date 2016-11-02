@@ -70,3 +70,11 @@ Specifies the regression formula. In linear or logistic regression, the format o
     ```
     "(time, event)="
     ```
+
+* `--id-col iid`  
+Specifies the subject ID column in `pheno_file`. The default column name is *IID*.
+
+* `--family-col fid`
+
+Specifies the family ID column in `pheno_file`. The default column name is *FID*. If study subjects are independent, then we specify the family ID column to be the same as the subject ID column.
+
