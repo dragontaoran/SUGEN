@@ -74,7 +74,17 @@ Specifies the regression formula. In linear or logistic regression, the format o
 * `--id-col iid`  
 Specifies the subject ID column in `pheno_file`. The default column name is *IID*.
 
-* `--family-col fid`
-
+* `--family-col fid`  
 Specifies the family ID column in `pheno_file`. The default column name is *FID*. If study subjects are independent, then we specify the family ID column to be the same as the subject ID column.
 
+* `--weight-col wt`  
+Specifies the weight column in `pheno_file`. The default column name is *WT*. This option is ignored if `--unweighted` is specified.
+
+* `--vcf vcf_file.gz`  
+Specifies the [block compressed and indexed](http://www.htslib.org/doc/tabix.html) VCF file. The default name is *geno.vcf.gz*.
+
+* `--dosage`  
+Analyzes dosage data in the VCF file. The dosages must be stored in the "DS" field of the VCF file. An example can be found [here](http://genome.sph.umich.edu/wiki/RAREMETALWORKER).
+
+* `--probmatrix prob_file`  
+Specifies the file that contains the file names of the pairwise inclusion probability matrices. The default name is *probmatrix.txt*. This option is optional in weighted analysis and ignored in unweighted analysis.
