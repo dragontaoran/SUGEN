@@ -91,3 +91,25 @@ Specifies the file that contains the file names of the pairwise inclusion probab
 
 * `--subset subset_expression`  
 Restricts analysis to a subset of subjects in `pheno_file`. For example, if one wants to restrict the analysis to subjects whose *var_a* equals *level_1*, where *var_a* is a column in `pheno_file`, and *level_1* is one of the values of *var_a*, then we can specify `subset_expression` as `"var_a=level_1"`.
+
+## Analysis Options
+* `--unweighted`  
+Uses the unweighted approach.
+
+* `--model model`  
+Specifies the regression model. There are three options: *linear* (linear regression), *logistic* (logistic regression), and *coxph* (Cox proportional hazard regression). The default value is *linear*. In linear or logistic regression, the trait is continuous or binary (0/1), respectively. In Cox proportional hazard regression, the time is positive, and the event indicator is binary (0/1).
+
+* \item `--robust-variance`  
+If this option is specified, then the robust variance estimator will be used. Otherwise, the model-based variance estimator will be used.
+
+* `--left-truncation left_truncation_time`  
+Specifies the left truncation time (if any) in Cox proportional hazards regression. 
+
+* `--cond cond_file`  
+In single-variant analysis, performs conditional analysis conditioning on the variants included in `cond_file`. There is no default value for `cond_file`. The format of the variant IDs in `cond_file` is *chromosome:position*. This option is valid only when `--score` is not specified. In this situation, either `--cond cond_file` or `--ge envi_covs` can be specified, but not both. If neither is specified, then standard association analysis is performed.
+
+* `--ge envi_covs`  
+In single-variant analysis, performs gene-environment interaction analysis. `envi_covs` are the names of the environment variables. The format of `envi_covs` is *covariate_1,covariate_2,...,covariate_k*. That is, multiple environment variables are separately by commas. There is no default value for `envi_covs`. This option is valid only when `--score` is not specified. In this situation, either `--cond cond_file` or `--ge envi_covs` can be specified, but not both. If neither is specified, then standard association analysis is performed.
+
+* `--score`  
+Uses score statistics.
