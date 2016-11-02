@@ -40,12 +40,10 @@ SUGEN [--pheno pheno_file] [--formula formula] [--id-col iid] [--family-col fid]
 
 # OPTIONS
 ## Input Options
-* `--pheno pheno_file`
-
+* `--pheno pheno_file`  
 Specifies the phenotype file. The default name is *pheno.txt*.
 
 * 
-`--formula formula`
-
+`--formula formula`  
 Specifies the regression formula. In linear or logistic regression, the format of `formula` is
 
