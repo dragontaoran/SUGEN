@@ -34,3 +34,17 @@ SUGEN [--pheno pheno_file] [--formula formula] [--id-col iid] [--family-col fid]
 [--out-zip] [--extract-chr chr] [--extract-range range] [--extract-file extract_file] \
 [--group-maf maf_ub] [--group-callrate cr_lb]
 ```
+
+
+# OPTIONS
+## Input Options
+* ```sh
+--pheno pheno_file
+```
+Specifies the phenotype file. The default name is *pheno.txt*.
+
+* ```sh
+--formula formula
+```
+Specifies the regression formula. In linear or logistic regression, the format of {\it formula} is
+
