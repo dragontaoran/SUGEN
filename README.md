@@ -187,6 +187,7 @@ Each row is a variant ID, which should be in *chromosome:position* format. Note 
 ### Single-Variant Analysis Results
 The rows represent varaints. The first row is the header line. Missing values are denoted by *NA*. Tables 1--3 describe the columns of `prefix.wald.out` in standard association analysis, conditional analysis, and gene-environment interaction analysis, respectively.
 
+#### Column Description for `prefix.wald.out` in Standard Association Analysis
 | Column Name   | Description                                                        |
 |---------------|--------------------------------------------------------------------|
 | CHROM         | Chromosome.                                                        |
