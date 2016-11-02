@@ -99,7 +99,7 @@ Uses the unweighted approach.
 * `--model model`  
 Specifies the regression model. There are three options: *linear* (linear regression), *logistic* (logistic regression), and *coxph* (Cox proportional hazard regression). The default value is *linear*. In linear or logistic regression, the trait is continuous or binary (0/1), respectively. In Cox proportional hazard regression, the time is positive, and the event indicator is binary (0/1).
 
-* \item `--robust-variance`  
+* `--robust-variance`  
 If this option is specified, then the robust variance estimator will be used. Otherwise, the model-based variance estimator will be used.
 
 * `--left-truncation left_truncation_time`  
@@ -113,3 +113,35 @@ In single-variant analysis, performs gene-environment interaction analysis. `env
 
 * `--score`  
 Uses score statistics.
+
+* `--score-rescale rescale_rule`  
+Specifies the method to rescale the score statistics. There are two options: *naive* and *optimal*. The default value is *naive*. This option is valid only when `--score` is specified.
+
+* `--group group_file`  
+Performs gene-based association analysis. Gene memberships of variants are defined in `group_file`. There is no default value for `group_file`. This option is valid only when `--score` is specified.
+
+* `--hetero-variance strata`  
+Allows the residual variance in linear regression to be different in different levels of `strata`.
+
+## Output Options
+* `--out-prefix out_prefix`  
+Specifies the prefix of the output files. The default prefix is *results*.
+
+* `--out-zip`  
+Zips the output files.
+
+* `--extract-chr chr`  
+Restricts single-variant analysis to variants in chromosome `chr`. This option is valid only when `--group group_file` is not specified.
+
+* `--extract-range range`
+Restricts single-variant analysis to variants in chromosome `chr` and positions in `range`. The format of `range` is *1000000-2000000*. 
+This option is valid only when `--group group_file` is not specified and `--extract-chr chr` is specified.
+
+* `--extract-file extract_file`  
+Restricts single-variant analysis to variants in `extract_file`. The format of the variant IDs in `extract_file` is *chromosome:position*. This option is valid only when `--group group_file`, `--extract-chr chr`, and `--extract-range range` are not specified.
+
+* `--group-maf maf_ub`  
+Specifies the minor allele frequency (MAF) upper bound for gene-based association analysis. `maf_ub` is a real number between 0 and 1. Its default value is *0.05*. Variants with MAFs greater than *maf_ub* will not be included in the analysis.
+
+* `--group-callrate cr_lb`  
+Specifies the call rate lower bound for gene-based association analysis. `cr_lb` is a real number between 0 and 1. Its default value is *0*. Variants with call rates less than `cr_lb` will not be included in the analysis.
