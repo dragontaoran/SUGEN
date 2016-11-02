@@ -15,7 +15,7 @@ Step 1: Unzip the package.
 ```
 Step 2: Go to the SUGEN directory.
 ```sh
-  cd ./SUGEN
+  cd ./SUGEN-master
 ```
 Step 3: Install SUGEN. When successful, an executable called "SUGEN" will be generated in ./SUGEN.
 ```sh
