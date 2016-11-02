@@ -46,4 +46,18 @@ Specifies the phenotype file. The default name is *pheno.txt*.
 * 
 `--formula formula`  
 Specifies the regression formula. In linear or logistic regression, the format of `formula` is
-
+```sh
+"trait=covariate_1+covariate_2+...+covariate_p"
+```
+The trait and covariates must appear in `pheno_file`. If there is no covariate, then we specify the formula as 
+```sh
+"trait="
+```
+In Cox proportional hazards regression, the format of `formula` is
+```sh
+"(time, event)=covariate_1+covariate_2+...+covariate_p"
+```
+In this case, the double quotes in `formula` cannot be omitted. The time, event indicator, and covariates must appear in `pheno_file`. If there is no covariate, then we specify the formula as 
+```sh
+"(time, event)="
+```
