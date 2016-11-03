@@ -206,4 +206,24 @@ The rows represent varaints. The first row is the header line. Missing values ar
 | SE            | Standard error estimate of BETA.                                   |
 | PVALUE        | *p*-value.                                                         |
 
-
+#### Table 2: Column Description in Conditional Analysis
+| Column Name      | Description                                                        |
+|------------------|--------------------------------------------------------------------|
+| CHROM            | Chromosome.                                                        |
+| POS              | Position.                                                          |
+| VCF_ID           | Varaint ID in the VCF file.                                        |
+| REF              | Reference allele.                                                  |
+| ALT              | Alternative allele.                                                |
+| ALT_AF           | Alternative allele frequency.                                      |
+| ALT_AC           | Alternative allele count.                                          |
+| N_INFORMATIVE    | Number of subjects included in the analysis.                       |
+| N_REF            | Number of subjects with two reference alleles.                     |
+| N_HET            | Number of subjects with one reference and one alternative alleles. |
+| N_ALT            | Number of subjects with two alternative alleles.                   |
+| N_DOSE           | Number of subjects with genotype dosages.                          |
+| BETA             | Effect estimate.                                                   |
+| SE               | Standard error estimate of BETA.                                   |
+| PVALUE           | *p*-value.                                                         |
+| BETA_*variant*   | Effect estimate of *variant* that is conditioned on.               |
+| SE_*variant*     | Standard error estimate of BETA_*variant*.                         |
+| PVALUE_*variant* | *p*-value of *variant* that is conditioned on.                     |
