@@ -1,4 +1,4 @@
-**Table of Contents**
+**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
 
 - [GENERAL INFORMATION](#)
 - [CITATION](#)
@@ -21,8 +21,12 @@
 - [OUTPUT FILES](#)
 	- [Wald Statistics](#)
 		- [Single-Variant Analysis Results](#)
+			- [Table 1: Column Description in Standard Association Analysis](#)
+			- [Table 2: Column Description in Conditional Analysis](#)
+			- [Table 3: Column Description in Gene-Environment Interaction Analysis](#)
 	- [Score Statistics](#)
 		- [Single-Variant Analysis Results](#)
+			- [Table 4: Column Description in Standard Association Analysis](#)
 		- [Gene-Based Summary Statistics](#)
 - [VERSION HISTORY](#)
 
