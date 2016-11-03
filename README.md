@@ -290,7 +290,7 @@ The rows represent varaints. The first row is the header line. Missing values ar
 
 ## Score Statistics
 ### Single-Variant Analysis Results
-The rows represent SNPs. The first row is the header line. Missing values are denoted by *NA*. Tables 4 describe the columns of `prefix.score.snp.out` in standard association analysis.
+The rows represent SNPs. The first row is the header line. Missing values are denoted by *NA*. Tables 4 describes the columns of `prefix.score.snp.out` in standard association analysis.
 
 #### Table 4: Column Description in Standard Association Analysis
 | Column Name   | Description                                                                                                  |
