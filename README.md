@@ -154,7 +154,7 @@ Performs gene-based association analysis. Gene memberships of variants are defin
 Allows the residual variance in linear regression to be different in different levels of `strata`.
 
 ## Output Options
-* `--out-prefix out_prefix`  
+* `--out-prefix prefix`  
 Specifies the prefix of the output files. The default prefix is *results*.
 
 * `--out-zip`  
