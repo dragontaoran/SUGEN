@@ -208,10 +208,10 @@ Each row is a gene, which should be in the following format:
 gene_1  variant_1,variant_2  
 gene_2  variant_3,variant_4,variant_5
 ```
-The gene and variant IDs are separated by a tab. The variant IDs in the same gene are separately by commas. Variant IDs should be in *chromosome:position* format. Note that this file is needed only when we perform gene-based analysis (i.e., when `--group group_file` is specified).
+The gene and variant IDs are separated by a tab. The variant IDs in the same gene are separated by commas. Variant IDs should be in *chromosome:position* format. Note that this file is needed only when we perform gene-based analysis (i.e., when `--group group_file` is specified).
 
 ## File that Contains the Subset of Variants to be Analyzed in Single-Variant Analysis
-Each row is a variant ID, which should be in *chromosome:position* format. Note that this file is needed only when --extract-file extract_file is specified.
+Each row is a variant ID, which should be in *chromosome:position* format. Note that this file is needed only when `--extract-file extract_file` is specified.
 
 
 # OUTPUT FILES
