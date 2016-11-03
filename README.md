@@ -171,7 +171,7 @@ This option is valid only when `--group group_file` is not specified and `--extr
 Restricts single-variant analysis to variants in `extract_file`. The format of the variant IDs in `extract_file` is *chromosome:position*. This option is valid only when `--group group_file`, `--extract-chr chr`, and `--extract-range range` are not specified.
 
 * `--group-maf maf_ub`  
-Specifies the minor allele frequency (MAF) upper bound for gene-based association analysis. `maf_ub` is a real number between 0 and 1. Its default value is *0.05*. Variants with MAFs greater than *maf_ub* will not be included in the analysis.
+Specifies the minor allele frequency (MAF) upper bound for gene-based association analysis. `maf_ub` is a real number between 0 and 1. Its default value is *0.05*. Variants with MAFs greater than `maf_ub` will not be included in the analysis.
 
 * `--group-callrate cr_lb`  
 Specifies the call rate lower bound for gene-based association analysis. `cr_lb` is a real number between 0 and 1. Its default value is *0*. Variants with call rates less than `cr_lb` will not be included in the analysis.
