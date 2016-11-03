@@ -186,7 +186,7 @@ The phenotype file should be tab-delimited. Missing data are denoted by *NA*. Th
 `--id-col iid`, `--family-col fid`, or `--weight-col wt`are excluded from the analysis.
 
 ## VCF File
-The VCF file contains the genotype data. The format specifications of a VCF file can be found [here](http://www.1000genomes.org/wiki/Analysis/Variant\%20Call\%20Format/vcf-variant-call-format-version-41). The VCF file should be compressed by [bgzip](http://www.htslib.org/doc/tabix.html) and indexed by [tabix](http://www.htslib.org/doc/tabix.html), using the following commands:
+The VCF file contains the genotype data. The format specifications of a VCF file can be found [here](http://www.1000genomes.org/wiki/Analysis/Variant\%20Call\%20Format/vcf-variant-call-format-version-41). The VCF file should be compressed and indexed by [bgzip and tabix](http://www.htslib.org/doc/tabix.html), respectively, using the following commands:
 ```
 bgzip vcf_file
 tabix -p vcf -f vcf_file.gz  
