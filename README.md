@@ -36,7 +36,7 @@ SUGEN is a command-line software program written in C++ to implement the weighte
 matrix for variants in each gene. These summary statistics can be loaded into the software program [MASS](http://dlin.web.unc.edu/software/mass/) to perform all commonly used gene-based association tests.
 
 # CITATION
-Lin, D. Y., Tao, R., Kalsbeek, W., Zeng, D., Gonzalez, F., Fernández-Rhodes, L., Graff, M., Koch, G., North, K. E., and Heiss, G. (2014). [Genetic Association Analysis Under Complex Survey Sampling: The Hispanic Community Health Study/Study of Latinos](http://www.cell.com/ajhg/abstract/S0002-9297(14)00471-6), American Journal of Human Genetics, 95(6): 675-688.
+Lin, D. Y., Tao, R., Kalsbeek, W., Zeng, D., Gonzalez, F., Fernández-Rhodes, L., Graff, M., Koch, G., North, K. E., and Heiss, G. (2014). "[Genetic Association Analysis Under Complex Survey Sampling: The Hispanic Community Health Study/Study of Latinos](http://www.cell.com/ajhg/abstract/S0002-9297(14)00471-6)", American Journal of Human Genetics, 95(6): 675-688.
 
 # DOWNLOAD AND INSTALLATION
 ## Download
