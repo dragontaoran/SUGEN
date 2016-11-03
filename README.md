@@ -127,7 +127,7 @@ Restricts analysis to a subset of subjects in `pheno_file`. For example, if one 
 Uses the unweighted approach.
 
 * `--model model`  
-Specifies the regression model. There are three options: *linear* (linear regression), *logistic* (logistic regression), and *coxph* (Cox proportional hazards regression). The default value is *linear*. In linear or logistic regression, the trait is continuous or binary (0/1), respectively. In Cox proportional hazards regression, the time is positive, and the event indicator is binary (0/1).
+Specifies the regression model. There are three options: *linear* (linear regression), *logistic* (logistic regression), and *coxph* (Cox proportional hazards regression). The default value is *linear*. In linear or logistic regression, the trait is continuous or binary (0/1), respectively. In Cox proportional hazards regression, the event time is positive, and the event indicator is binary (0/1).
 
 * `--robust-variance`  
 If this option is specified, then the robust variance estimator will be used. Otherwise, the model-based variance estimator will be used.
