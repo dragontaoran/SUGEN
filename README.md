@@ -1,4 +1,4 @@
-**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
+**Table of Contents**
 
 - [GENERAL INFORMATION](#)
 - [CITATION](#)
@@ -21,14 +21,11 @@
 - [OUTPUT FILES](#)
 	- [Wald Statistics](#)
 		- [Single-Variant Analysis Results](#)
-			- [Table 1: Column Description in Standard Association Analysis](#)
-			- [Table 2: Column Description in Conditional Analysis](#)
-			- [Table 3: Column Description in Gene-Environment Interaction Analysis](#)
 	- [Score Statistics](#)
 		- [Single-Variant Analysis Results](#)
-			- [Table 4: Column Description in Standard Association Analysis](#)
 		- [Gene-Based Summary Statistics](#)
 - [VERSION HISTORY](#)
+- [CONTACT](#)
 
 # GENERAL INFORMATION
 SUGEN is a command-line software program written in C++ to implement the weighted and unweighted approaches described by [Lin et al. (2014)](http://www.cell.com/ajhg/abstract/S0002-9297(14)00471-6) for various types of association analysis under complex survey sampling. The current version of the program can accommodate continuous, binary, and right-censored time-to-event traits. It can perform single-variant and gene-based association analysis. In single-variant analysis, it can perform standard association analysis, conditional analysis, and gene-environment interaction analysis using Wald statistics. In standard association analysis, we include the SNP of interest and other covariates (if any) as predictors in the regression model. In conditional analysis, we include the SNP of interest, the SNPs that are conditioned on, and other covariates (if any) as predictors in the regression model. In gene-environment interaction analysis, we include the SNP of interest, the environment variables, the interactions between the SNP and environment variables, and other covariates (if any) as predictors in the regression model. In gene-based analysis, it generates the score statistics and covariance
@@ -381,3 +378,6 @@ covariate in the model.
 * 8.1 (current version, released on November 2, 2016)  
     1. Added *p*-values in the gene-environment interaction analysis output file.
     2. Fixed a bug in the weighted approach.
+    
+# CONTACT
+For questions, please contact [Ran Tao](https://sites.google.com/site/dragontaoran/home).
