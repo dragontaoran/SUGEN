@@ -343,7 +343,7 @@ and [MetaSKAT](https://cran.r-project.org/web/packages/MetaSKAT/index.html).
 * 5.1 (released on Aug 14th, 2014)  
     Added the capability to perform conditional analysis.
 
-* 5.2 (released on Sep 21st, 2014)
+* 5.2 (released on Sep 21st, 2014)  
     Modified the variance estimation formula. Used a new approach to trim the pairwise inclusion probabilities.
 
 * 6.0 (released on Oct 1st, 2014)  
@@ -358,7 +358,7 @@ and [MetaSKAT](https://cran.r-project.org/web/packages/MetaSKAT/index.html).
 * 6.3 (released on Nov 13rd, 2015)  
     Improved the computational efficiency of unweighted analysis.
 
-* 7.0 (released on March 30th, 2016)
+* 7.0 (released on March 30th, 2016)  
     Improved the user interface. Changed the genotype file format from plain text to VCF. Added the capability to perform gene-based association analysis.
 
 * 7.1 (released on May 2nd, 2016)  
@@ -379,6 +379,6 @@ covariate in the model.
     2. Modified the model-based covariance matrix estimator in gene-based tests so that it is more accurate for rare variants.
     3. Fixed a bug in reading the phenotype file when the subject ID or family ID column is the last column of the phenotype file.
 
-* 8.1 (current version, released on November 2, 2016)
+* 8.1 (current version, released on November 2, 2016)  
     1. Added *p*-values in the gene-environment interaction analysis output file.
     2. Fixed a bug in the weighted approach.
