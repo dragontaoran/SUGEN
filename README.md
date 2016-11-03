@@ -120,7 +120,7 @@ Analyzes dosage data in the VCF file. The dosages must be stored in the *DS* fie
 Specifies the file that contains the file names of the pairwise inclusion probability matrices. The default name is *probmatrix.txt*. This option is optional in weighted analysis and ignored in unweighted analysis.
 
 * `--subset subset_expression`  
-Restricts analysis to a subset of subjects in `pheno_file`. For example, if one wants to restrict the analysis to subjects whose *var_a* equals *level_1*, where *var_a* is a column in `pheno_file`, and *level_1* is one of the values of *var_a*, then we can specify `subset_expression` as `"var_a=level_1"`.
+Restricts analysis to a subset of subjects in `pheno_file`. For example, if one wants to restrict the analysis to subjects whose *var_a* equals *level_1*, where *var_a* is a column in `pheno_file`, and *level_1* is one of the values of *var_a*, then we can specify `--subset_expression "var_a=level_1"`.
 
 ## Analysis Options
 * `--unweighted`  
