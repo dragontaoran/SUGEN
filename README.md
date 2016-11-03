@@ -227,3 +227,110 @@ The rows represent varaints. The first row is the header line. Missing values ar
 | BETA_*variant*   | Effect estimate of *variant* that is conditioned on.               |
 | SE_*variant*     | Standard error estimate of BETA_*variant*.                         |
 | PVALUE_*variant* | *p*-value of *variant* that is conditioned on.                     |
+
+#### Table 3: Column Description in Gene-Environment Interaction Analysis
+A	B
+1	
+Column Name
+Description
+2	
+CHROM
+Chromosome.
+3	
+POS
+Position.
+4	
+VCF_ID
+Varaint ID in the VCF file.
+5	
+REF
+Reference allele.
+6	
+ALT
+Alternative allele.
+7	
+ALT_AF
+Alternative allele frequency.
+8	
+ALT_AC
+Alternative allele count.
+9	
+N_INFORMATIVE
+Number of subjects included in the analysis.
+10	
+N_REF
+Number of subjects with two reference alleles.
+11	
+N_HET
+Number of subjects with one reference and one alternative alleles.
+12	
+N_ALT
+Number of subjects with two alternative alleles.
+13	
+N_DOSE
+Number of subjects with genotype dosages.
+14	
+PVALUE_G
+*p*-value of the variant.
+15	
+PVALUE_INTER
+*p*-value of the interaction term(s) between the variant and environment variable(s).
+16	
+PVALUE_BOTH
+*p*-value of both the variant and gene-environment interaction terms.
+17	
+BETA_G
+Effect estimate of the variant.
+18	
+BETA_*envi*
+Effect estimate of environment variable *envi*.
+19	
+BETA_G:*envi*
+Effect estimate of the interaction term between the variant and environment variable *envi*,
+denoted by G:*envi*.
+20	
+COV_G_G
+Variance estimate of BETA_G.
+21	
+COV_*envi*_*envi*
+Variance estimate of BETA_*envi*.
+22	
+COV_G:*envi*_G:*envi*
+Variance estimate of BETA_G:*envi*.
+23	
+COV_G_*envi*
+Covariance estimate between BETA_G and BETA_*envi*.
+24	
+COV_G_G:*envi*
+Covariance estimate between BETA_G and BETA_G:*envi*.
+25	
+COV_*envi*_G:*envi*
+Covariance estimate between BETA_*envi* and BETA_G:*envi*.
+ GeneratePut tabs between columnsCompact mode
+Result (click "Generate" to refresh) Copy to clipboard
+| Column Name           | Description                                                                                                       |
+|-----------------------|-------------------------------------------------------------------------------------------------------------------|
+| CHROM                 | Chromosome.                                                                                                       |
+| POS                   | Position.                                                                                                         |
+| VCF_ID                | Varaint ID in the VCF file.                                                                                       |
+| REF                   | Reference allele.                                                                                                 |
+| ALT                   | Alternative allele.                                                                                               |
+| ALT_AF                | Alternative allele frequency.                                                                                     |
+| ALT_AC                | Alternative allele count.                                                                                         |
+| N_INFORMATIVE         | Number of subjects included in the analysis.                                                                      |
+| N_REF                 | Number of subjects with two reference alleles.                                                                    |
+| N_HET                 | Number of subjects with one reference and one alternative alleles.                                                |
+| N_ALT                 | Number of subjects with two alternative alleles.                                                                  |
+| N_DOSE                | Number of subjects with genotype dosages.                                                                         |
+| PVALUE_G              | *p*-value of the variant.                                                                                         |
+| PVALUE_INTER          | *p*-value of the interaction term(s) between the variant and environment variable(s).                             |
+| PVALUE_BOTH           | *p*-value of both the variant and gene-environment interaction terms.                                             |
+| BETA_G                | Effect estimate of the variant.                                                                                   |
+| BETA_*envi*           | Effect estimate of environment variable *envi*.                                                                   |
+| BETA_G:*envi*         | Effect estimate of the interaction term between the variant and environment variable *envi*, denoted by G:*envi*. |
+| COV_G_G               | Variance estimate of BETA_G.                                                                                      |
+| COV_*envi*_*envi*     | Variance estimate of BETA_*envi*.                                                                                 |
+| COV_G:*envi*_G:*envi* | Variance estimate of BETA_G:*envi*.                                                                               |
+| COV_G_*envi*          | Covariance estimate between BETA_G and BETA_*envi*.                                                               |
+| COV_G_G:*envi*        | Covariance estimate between BETA_G and BETA_G:*envi*.                                                             |
+| COV_*envi*_G:*envi*   | Covariance estimate between BETA_*envi* and BETA_G:*envi*.
