@@ -114,7 +114,7 @@ Specifies the weight column in `pheno_file`. The default column name is *WT*. Th
 Specifies the [block compressed and indexed](http://www.htslib.org/doc/tabix.html) VCF file. The default name is *geno.vcf.gz*.
 
 * `--dosage`  
-Analyzes dosage data in the VCF file. The dosages must be stored in the "DS" field of the VCF file. An example can be found [here](http://genome.sph.umich.edu/wiki/RAREMETALWORKER).
+Analyzes dosage data in the VCF file. The dosages must be stored in the *DS* field of the VCF file. An example can be found [here](http://genome.sph.umich.edu/wiki/RAREMETALWORKER).
 
 * `--probmatrix prob_file`  
 Specifies the file that contains the file names of the pairwise inclusion probability matrices. The default name is *probmatrix.txt*. This option is optional in weighted analysis and ignored in unweighted analysis.
