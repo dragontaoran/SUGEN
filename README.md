@@ -204,12 +204,10 @@ only when we perform conditional analysis (i.e., when `--cond cond_file` is spec
 
 ## File that Contains Variants' Grouping Information in Gene-based Analysis
 Each row is a gene, which should be in the following format:
-
-<p align="center">
-*gene_1*  *variant_1,variant_2*  
-*gene_2*  *variant_3,variant_4,variant_5*
-</p>
- 
+```
+gene_1  variant_1,variant_2  
+gene_2  variant_3,variant_4,variant_5
+```
 The gene and variant IDs are separated by a tab. The variant IDs in the same gene are separately by commas. Variant IDs should be in *chromosome:position* format. Note that this file is needed only when we perform gene-based analysis (i.e., when `--group group_file` is specified).
 
 ## File that Contains the Subset of Variants to be Analyzed in Single-Variant Analysis
