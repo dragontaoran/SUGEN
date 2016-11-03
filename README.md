@@ -95,7 +95,7 @@ Specifies the regression formula. In linear or logistic regression, the format o
     "(time, event)=covariate_1+covariate_2+...+covariate_p"
     ```
 
-    In this case, the double quotes in `formula` cannot be omitted. The time, event indicator, and covariates must appear in `pheno_file`. If there is no covariate, then we specify the formula as  
+    The time, event indicator, and covariates must appear in `pheno_file`. If there is no covariate, then we specify the formula as  
 
     ```
     "(time, event)="
