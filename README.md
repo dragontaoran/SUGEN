@@ -255,3 +255,98 @@ The rows represent varaints. The first row is the header line. Missing values ar
 | COV_G_*envi*          | Covariance estimate between BETA_G and BETA_*envi*.                                                               |
 | COV_G_G:*envi*        | Covariance estimate between BETA_G and BETA_G:*envi*.                                                             |
 | COV_*envi*_G:*envi*   | Covariance estimate between BETA_*envi* and BETA_G:*envi*.                                                        |
+
+## Score Statistics
+### Single-Variant Analysis Results
+The rows represent SNPs. The first row is the header line. Missing values are denoted by *NA*. Tables 4 describe the columns of `prefix.score.snp.out` in standard association analysis.
+
+#### Table 4: Column Description in Standard Association Analysis
+| Column Name   | Description                                                                                                  |
+|---------------|--------------------------------------------------------------------------------------------------------------|
+| GENE_ID       | Gene ID. In single-variant analysis (i.e., `--group group_file` is not specified), GENE_ID equals CHROM:POS. |
+| CHROM         | Chromosome.                                                                                                  |
+| POS           | Position.                                                                                                    |
+| VCF_ID        | Varaint ID in the VCF file.                                                                                  |
+| REF           | Reference allele.                                                                                            |
+| ALT           | Alternative allele.                                                                                          |
+| ALT_AF        | Alternative allele frequency.                                                                                |
+| ALT_AC        | Alternative allele count.                                                                                    |
+| N_INFORMATIVE | Number of subjects included in the analysis.                                                                 |
+| N_REF         | Number of subjects with two reference alleles.                                                               |
+| N_HET         | Number of subjects with one reference and one alternative alleles.                                           |
+| N_ALT         | Number of subjects with two alternative alleles.                                                             |
+| N_DOSE        | Number of subjects with genotype dosages.                                                                    |
+| U             | Score statistic.                                                                                             |
+| V             | Variance estimate of U.                                                                                      |
+| BETA          | Effect estimate.                                                                                             |
+| SE            | Standard error estimate of BETA.                                                                             |
+| PVALUE        | *p*-value.                                                                                                   |
+
+### Gene-Based Summary Statistics
+The gene-based summary statistics are stored in [MASS format](http://dlin.web.unc.edu/software/mass/).
+They can be loaded into the software program [MASS](http://dlin.web.unc.edu/software/mass/) to perform all commonly used gene-based association tests. They can also be converted by the software program [PreMeta](http://dlin.web.unc.edu/software/premeta/) to files that are compatible with other commonly used rare-variant meta-analysis software programs, including [RAREMETAL](http://genome.sph.umich.edu/wiki/RAREMETAL_Documentation), [seqMeta](https://cran.r-project.org/web/packages/seqMeta/index.html), 
+and [MetaSKAT](https://cran.r-project.org/web/packages/MetaSKAT/index.html).
+
+# VERSION HISTORY
+* 1.0 (released on May 29th, 2013)  
+    First version released.
+
+* 2.0 (released on Nov 12nd, 2013)  
+    1. Added the capability to perform gene-environment interaction analysis.
+    2. Deleted the tab delimiter at the end of each row in the output file.
+
+* 3.0 (released on Dec 7th, 2013)  
+    Added the capability to perform logistic regression for binary (0/1) traits.
+
+* 4.0 (released on Feb 9th, 2014)  
+    Added the capability to analyze data with multiple pairwise inclusion probability matrices.
+
+* 4.1 (released on Mar 13rd, 2014)  
+    Added the capability to deal with imputed genotype dosages.
+
+* 5.0 (released on May 21st, 2014)  
+    1. Modified the variance estimation formula. Included both the model-based and robust variance estimators.
+    2. Changed the format of the phenotype file.
+
+* 5.1 (released on Aug 14th, 2014)  
+    Added the capability to perform conditional analysis.
+
+* 5.2 (released on Sep 21st, 2014)
+    Modified the variance estimation formula. Used a new approach to trim the pairwise inclusion probabilities.
+
+* 6.0 (released on Oct 1st, 2014)  
+    Added the unweighted approach.
+
+* 6.1 (released on Oct 6th, 2014)  
+    Changed some option names. Changed some column names in output files.
+
+* 6.2 (released on Nov 18th, 2014)  
+    Changed the name of the software program from "SOLReg" to "SUGEN".
+
+* 6.3 (released on Nov 13rd, 2015)  
+    Improved the computational efficiency of unweighted analysis.
+
+* 7.0 (released on March 30th, 2016)
+    Improved the user interface. Changed the genotype file format from plain text to VCF. Added the capability to perform gene-based association analysis.
+
+* 7.1 (released on May 2nd, 2016)  
+    Added the capability to handle dosage data. 
+
+* 7.2 (released on May 5th, 2016)  
+    Fixed a bug in reading the phenotype file when it contains redundant columns.
+
+* 7.3 (released on May 30th, 2016)  
+    1. Fixed a bug in gene-environment interaction analysis where the environment variable is the last
+covariate in the model.
+    2. Added the `--subset` option.
+    3. Added the `--hetero-variance` option.
+    4. Modified the model-based variance estimator so that it is stable for rare variants.
+
+* 8 (released on September 29, 2016)  
+    1.  Added the capability to perform Cox proportional hazard regression.
+    2. Modified the model-based covariance matrix estimator in gene-based tests so that it is more accurate for rare variants.
+    3. Fixed a bug in reading the phenotype file when the subject ID or family ID column is the last column of the phenotype file.
+
+* 8.1 (current version, released on November 2, 2016)
+    1. Added *p*-values in the gene-environment interaction analysis output file.
+    2. Fixed a bug in the weighted approach.
