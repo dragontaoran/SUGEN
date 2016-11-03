@@ -182,7 +182,7 @@ Specifies the call rate lower bound for gene-based association analysis. `cr_lb`
 
 # INPUT FILES
 ## Phenotype File
-The phenotype file should be tab-delimited. Missing data are denoted by *NA*. The rows represent study subjects. The 1st row is the header line. This file should include the subject ID column, family ID column (unless the subjects are independent), weight column (unless the unweighted approach is used, i.e., when `--unweighted` is specified), trait column (with trait values being continuous or binary if `model=linear` or `model=logistic`, respectively), time and event indicator columns (if `model=coxph`), and covariates columns (unless there is no covariate in `formula`). Subjects with missing values in any of the columns specified by `--formula formula`,
+The phenotype file should be tab-delimited. Missing data are denoted by *NA*. The rows represent study subjects. The 1st row is the header line. This file should include the subject ID column, family ID column (unless the subjects are independent), weight column (unless the unweighted approach is used, i.e., when `--unweighted` is specified), trait column (with trait values being continuous or binary if `model=linear` or `model=logistic`, respectively), event time and indicator columns (if `model=coxph`), and covariates columns (unless there is no covariate in `formula`). Subjects with missing values in any of the columns specified by `--formula formula`,
 `--id-col iid`, `--family-col fid`, or `--weight-col wt`are excluded from the analysis.
 
 ## VCF File
