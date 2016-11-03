@@ -1,5 +1,35 @@
 # SUGEN
 
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-generate-toc again -->
+# Table of Contents
+
+- [GENERAL INFORMATION](#GENERAL INFORMATION)
+- [DOWNLOAD AND INSTALLATION](#DOWNLOAD AND INSTALLATION)
+    - [Download](#Download)
+    - [Installation](#Installation)
+- [SYNOPSIS](#SYNOPSIS)
+- [OPTIONS](#OPTIONS)
+    - [Input Options](#Input Options)
+    - [Analysis Options](#Analysis Options)
+    - [Output Options](#Output Options)
+-[INPUT FILES](#INPUT FILES)
+    - [Phenotype File](#Phenotype File)
+    - [VCF File](#VCF File)
+    - [Pairwise Inclusion Probability Matrix](#Pairwise Inclusion Probability Matrix)
+    - [File that Contains the File Names of the Pairwise Inclusion Probability Matrices](#File that Contains the File Names of the Pairwise Inclusion Probability Matrices)
+    - [File that Contains the Variants for Conditional Analysis](#File that Contains the Variants for Conditional Analysis)
+    - [File that Contains Variants' Grouping Information in Gene-based Analysis](#File that Contains Variants' Grouping Information in Gene-based Analysis)
+    - [File that Contains the Subset of Variants to be Analyzed in Single-Variant Analysis](#File that Contains the Subset of Variants to be Analyzed in Single-Variant Analysis)
+- [OUTPUT FILES](#OUTPUT FILES)
+    - [Wald Statistics](#Wald Statistics)
+        - [Single-Variant Analysis Results](#Single-Variant Analysis Results)
+    - [Score Statistics](#Score Statistics)
+        - [Single-Variant Analysis Results](#Single-Variant Analysis Results)
+        - [Gene-Based Summary Statistics](#Gene-Based Summary Statistics)
+- [VERSION HISTORY](#VERSION HISTORY)
+
+<!-- markdown-toc end -->
+
 # GENERAL INFORMATION
 SUGEN is a command-line software program written in C++ to implement the weighted and unweighted approaches described by [Lin et al. (2014)](http://www.cell.com/ajhg/abstract/S0002-9297(14)00471-6) for various types of association analysis under complex survey sampling. The current version of the program can accommodate continuous, binary, and right-censored time-to-event traits. It can perform single-variant and gene-based association analysis. In single-variant analysis, it can perform standard association analysis, conditional analysis, and gene-environment interaction analysis using Wald statistics. In standard association analysis, we include the SNP of interest and other covariates (if any) as predictors in the regression model. In conditional analysis, we include the SNP of interest, the SNPs that are conditioned on, and other covariates (if any) as predictors in the regression model. In gene-environment interaction analysis, we include the SNP of interest, the environment variables, the interactions between the SNP and environment variables, and other covariates (if any) as predictors in the regression model. In gene-based analysis, it generates the score statistics and covariance
 matrix for variants in each gene. These summary statistics can be loaded into the software program [MASS](http://dlin.web.unc.edu/software/mass/) to perform all commonly used gene-based association tests.
