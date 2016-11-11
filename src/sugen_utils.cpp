@@ -3492,14 +3492,22 @@ void SUGEN::LinearScoreNull_ (SVA_UTILS& sva_item)
 void SUGEN::LogisticScoreNull_ (SVA_UTILS& sva_item)
 {
 	double tol;
-	int iter;
+	int iter, stop_sign = 0;
+	bool small_step_ind;
+	double last_tol = 1E20;
+	// // RT
+	// time_t timer_start, timer_end;
+	// // RT end
 	
 	sva_item.theta0_.setZero();
 	sva_item.theta_.setZero();
 	
 	/**** effect estimation *************************************************************/
 	for (iter=1; iter<=MAX_ITER; iter++) 
-	{				
+	{
+		// // RT
+		// time(&timer_start);
+		// // RT end		
 		sva_item.WtW_.setZero();
 		sva_item.WtY_.setZero();		
 		for (int nstudy=0; nstudy<N_study_; nstudy++) 
@@ -3524,19 +3532,51 @@ void SUGEN::LogisticScoreNull_ (SVA_UTILS& sva_item)
 		sva_item.theta_ = sva_item.WtW_.selfadjointView<Eigen::Upper>().ldlt().solve(sva_item.WtY_);
 		
 		tol = sva_item.theta_.array().abs().sum();
-		sva_item.theta_ += sva_item.theta0_;		
+		
+		small_step_ind = false;
+		while (tol > sva_item.newton_raphson_step_size_)
+		{
+			small_step_ind = true;
+			sva_item.theta_ *= 0.5;
+			tol = sva_item.theta_.array().abs().sum();
+		}
+		
+		sva_item.theta_ += sva_item.theta0_;
+		sva_item.theta0_ = sva_item.theta_;
+		
+		if (tol >= last_tol-TOL && !small_step_ind)
+		{
+			stop_sign ++;
+		}
+		last_tol = tol;
+
+		// // RT
+		// time(&timer_end);
+		// cout << "Iteration=" << iter << "; time=" << difftime(timer_end, timer_start) << " seconds; error=" << tol << endl;
+		// cout << "theta=" << sva_item.theta_.transpose() << endl;
+		// cout << endl;
+		// // RT end
+				
 		if (tol < TOL) 
 		{
 			break;
-		} 
-		else 
-		{
-			sva_item.theta0_ = sva_item.theta_;
 		}
+		else if (::isnan(tol))
+		{
+			sva_item.newton_raphson_step_size_ /= 10.;
+			iter = 1;
+			sva_item.theta0_ = sva_item.theta_initilization_;
+			sva_item.theta_ = sva_item.theta_initilization_;
+		}
+		else if (stop_sign > 5)
+		{
+			break;
+		}
+	
 	}
 	/**** effect estimation *************************************************************/
 	
-	if (iter == MAX_ITER+1) 
+	if (iter == MAX_ITER+1 || ::isnan(tol) || stop_sign > 5) 
 	{
 		error(FO_log_, "Error: Logistic regression under the null does not converge!");
 	} 
