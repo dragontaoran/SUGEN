@@ -38,4 +38,4 @@ matrix:
       env:
         - COMPILER=g++-6
 
-script: make
+script: make CXX=$COMPILER
