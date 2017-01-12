@@ -109,6 +109,8 @@ struct SVA_UTILS {
 	int n_dose_;
 	double maf_;
 	bool flag_multiallelic_;
+	int n_case_;
+	double maf_case_;
 	/**** SNP output info ***************************************************************/
 	
 	/**** output ************************************************************************/
@@ -137,6 +139,8 @@ struct SVA_UTILS {
 	vector<int> SNP_n2_count_; 
 	vector<int> SNP_n_dose_;
 	vector<double> SNP_maf_;
+	vector<int> SNP_n_case_;
+	vector<double> SNP_maf_case_;
 	int nSNP_;
 	MatrixXd Ahat_rescale_;
 	MatrixXd Bhat_rescale_;

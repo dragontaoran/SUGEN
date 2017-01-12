@@ -146,7 +146,7 @@ bool CheckSinglularVar (const Ref<const MatrixXd>& vartheta)
 	{
 		if (vartheta(i,i) <= 0. || ::isnan(vartheta(i,i))) 
 		{
-			return true;
+			return true;	
 		}
 	}
 	
@@ -577,10 +577,10 @@ void SUGEN::CommandLineArgs_ (const int argc, char *argv[])
 	{
 		stdError("Can not open log file " + FN_log_ + " !");
 	}		
-	FO_log_ << "SUGEN v8.1 (11/2/2016) starts at " << asctime(localtime(&now)) << endl;
+	FO_log_ << "SUGEN v8.2 (01/05/2017) starts at " << asctime(localtime(&now)) << endl;
 	FO_log_ << "Author: Ran Tao" << endl;
-	FO_log_ << "Email: taor@live.unc.edu" << endl;
-	FO_log_ << "Documentation & citation: http://dlin.web.unc.edu/software/sugen" << endl << endl;
+	FO_log_ << "Email: r.tao@vanderbilt.edu" << endl;
+	FO_log_ << "Documentation & citation: https://github.com/dragontaoran/SUGEN" << endl << endl;
 
 	FO_log_ << "The phenotype file is " << FN_pheno_ << "." << endl;
 	FO_log_ << "The formula is " << formula_ << "." << endl;
@@ -1656,6 +1656,14 @@ void SUGEN::SingleVariantAnalysis_OutputSNPCountHeader_ (SVA_UTILS& sva_item, co
 	if (sva_output_type == sva_header) 
 	{
 		*sva_item.FO_out_ << "CHROM\tPOS\tVCF_ID\tREF\tALT\tALT_AF\tALT_AC\tN_INFORMATIVE\tN_REF\tN_HET\tN_ALT\tN_DOSE";
+		if (method_ == logistic)
+		{
+			*sva_item.FO_out_ << "\tALT_AF_CASE\tN_CASE";
+		}
+		else if (method_ == right_censored)
+		{
+			*sva_item.FO_out_ << "\tALT_AF_EVENT\tN_EVENT";
+		}
 	} 
 	else 
 	{
@@ -1663,6 +1671,10 @@ void SUGEN::SingleVariantAnalysis_OutputSNPCountHeader_ (SVA_UTILS& sva_item, co
 			<< VCF_record_.getRefStr() << '\t' << VCF_record_.getAltStr();
 		*sva_item.FO_out_ << '\t' << sva_item.maf_<< '\t' << sva_item.mac_ << '\t' << sva_item.n_ << '\t' << sva_item.n0_count_ 
 			<< '\t'  << sva_item.n1_count_ << '\t' << sva_item.n2_count_ << '\t' << sva_item.n_dose_;
+		if (method_ == logistic || method_ == right_censored)
+		{
+			*sva_item.FO_out_ << "\t" << sva_item.maf_case_ << "\t" << sva_item.n_case_;
+		}
 	}		
 } // SUGEN::SingleVariantAnalysis_OutputSNPCountHeader_
 
@@ -1859,6 +1871,11 @@ void SUGEN::SingleVariantAnalysis_GetSNP_ (SVA_UTILS& sva_item)
 	sva_item.n2_count_ = 0;
 	sva_item.n_dose_ = 0;
 	sva_item.n_ = 0;
+	if (method_ == logistic || method_ == right_censored)
+	{
+		sva_item.maf_case_ = 0.;
+		sva_item.n_case_ = 0.;
+	}
 		
 	for (int nstudy=0; nstudy<N_study_; nstudy++) 
 	{
@@ -1903,6 +1920,16 @@ void SUGEN::SingleVariantAnalysis_GetSNP_ (SVA_UTILS& sva_item)
 						W_[nstudy](i,nhead_+j) = W_[nstudy](i,0)*W_[nstudy](i,nhead_+nadd_+ENVI_col_(j));
 					}
 				}
+				if (method_ == logistic && Y_[nstudy](i) == 1)
+				{
+					sva_item.maf_case_ += W_[nstudy](i,0);
+					sva_item.n_case_ += 1;
+				}
+				if (method_ == right_censored && !Y_cox_[nstudy][i].is_alive_)
+				{
+					sva_item.maf_case_ += W_[nstudy](i,0);
+					sva_item.n_case_ += 1;					
+				}
 			}
 		}
 	}
@@ -1912,6 +1939,13 @@ void SUGEN::SingleVariantAnalysis_GetSNP_ (SVA_UTILS& sva_item)
 	{
 		sva_item.maf_ /= 2.*sva_item.n_;
 		sva_item.mac_ = sva_item.n1_count_+2*sva_item.n2_count_;
+	}
+	if (method_ == logistic || method_ == right_censored)
+	{
+		if (sva_item.n_case_ > 0)
+		{
+			sva_item.maf_case_ /= 2.*sva_item.n_case_;
+		}
 	}
 } // SUGEN::SingleVariantAnalysis_GetSNP_
 
@@ -4109,6 +4143,14 @@ void SUGEN::ScoreTests_Output_ (SVA_UTILS& sva_item, const SVA_OUTPUT_TYPE_ sva_
 	if (sva_output_type == sva_header) 
 	{
 		*sva_item.FO_score_snp_ << "GROUP_ID\tCHROM\tPOS\tVCF_ID\tREF\tALT\tALT_AF\tALT_AC\tN_INFORMATIVE\tN_REF\tN_HET\tN_ALT\tN_DOSE";
+		if (method_ == logistic)
+		{
+			*sva_item.FO_score_snp_ << "\tALT_AF_CASE\tN_CASE";
+		}
+		else if (method_ == right_censored)
+		{
+			*sva_item.FO_score_snp_ << "\tALT_AF_EVENT\tN_EVENT";
+		}
 		*sva_item.FO_score_snp_ << "\tU\tV\tBETA\tSE\tPVALUE\n";
 		*sva_item.FO_score_mass_ << "#Samples = " << N_total_ << "\n";
 	}
@@ -4120,6 +4162,11 @@ void SUGEN::ScoreTests_Output_ (SVA_UTILS& sva_item, const SVA_OUTPUT_TYPE_ sva_
 				<< "\t" << sva_item.SNP_ref_[i] << "\t" << sva_item.SNP_alt_[i]
 				<< "\t" << sva_item.SNP_maf_[i] << "\t" << sva_item.SNP_mac_[i] << "\t" << N_total_ << "\t" << sva_item.SNP_n0_count_[i] 
 				<< "\t"  << sva_item.SNP_n1_count_[i] << "\t" << sva_item.SNP_n2_count_[i] << "\t" << sva_item.SNP_n_dose_[i];
+			
+			if (method_ == logistic || method_ == right_censored)
+			{
+				*sva_item.FO_score_snp_ << "\t" << sva_item.SNP_maf_case_[i] << "\t" << sva_item.SNP_n_case_[i];
+			}
 			
 			*sva_item.FO_score_snp_ << "\t" << sva_item.U_(i) << "\t" << sva_item.V_(i,i);
 			if (sva_item.V_(i,i) > 0.)
@@ -4169,6 +4216,11 @@ void SUGEN::ScoreTests_GetSNP_ (SVA_UTILS& sva_item)
 	sva_item.n2_count_ = 0;
 	sva_item.n_dose_ = 0;
 	sva_item.n_ = 0;
+	if (method_ == logistic || method_ == right_censored)
+	{
+		sva_item.maf_case_ = 0.;
+		sva_item.n_case_ = 0.;
+	}
 			
 	for (int nstudy=0; nstudy<N_study_; nstudy++) 
 	{
@@ -4196,6 +4248,16 @@ void SUGEN::ScoreTests_GetSNP_ (SVA_UTILS& sva_item)
 					{
 						sva_item.n2_count_++;
 					}
+				}
+				if (method_ == logistic && Y_[nstudy](i) == 1)
+				{
+					sva_item.maf_case_ += sva_item.rawG_[nstudy](i);
+					sva_item.n_case_ += 1;
+				}
+				if (method_ == right_censored && !Y_cox_[nstudy][i].is_alive_)
+				{
+					sva_item.maf_case_ += sva_item.rawG_[nstudy](i);
+					sva_item.n_case_ += 1;					
 				}				
 			}
 		}
@@ -4206,6 +4268,13 @@ void SUGEN::ScoreTests_GetSNP_ (SVA_UTILS& sva_item)
 	{
 		sva_item.maf_ /= 2.*sva_item.n_;
 		sva_item.mac_ = sva_item.n1_count_+2*sva_item.n2_count_;
+	}
+	if (method_ == logistic || method_ == right_censored)
+	{
+		if (sva_item.n_case_ > 0)
+		{
+			sva_item.maf_case_ /= 2.*sva_item.n_case_;
+		}
 	}
 	
 	for (int nstudy=0; nstudy<N_study_; nstudy++) 
@@ -5477,6 +5546,11 @@ void SUGEN::ScoreTests_GroupAnalysis_ (SVA_UTILS& sva_item)
 		sva_item.SNP_n2_count_.clear(); 
 		sva_item.SNP_n_dose_.clear();
 		sva_item.SNP_maf_.clear();
+		if (method_ == logistic || method_ == right_censored)
+		{
+			sva_item.SNP_n_case_.clear();
+			sva_item.SNP_maf_case_.clear();
+		}
 		
 		for (int nsnp=0; nsnp<SNP_ID.size(); nsnp++)
 		{
@@ -5506,6 +5580,11 @@ void SUGEN::ScoreTests_GroupAnalysis_ (SVA_UTILS& sva_item)
 					sva_item.SNP_n2_count_.push_back(sva_item.n2_count_);
 					sva_item.SNP_n_dose_.push_back(sva_item.n_dose_);
 					sva_item.SNP_maf_.push_back(sva_item.maf_);
+					if (method_ == logistic || method_ == right_censored)
+					{
+						sva_item.SNP_maf_case_.push_back(sva_item.maf_case_);
+						sva_item.SNP_n_case_.push_back(sva_item.n_case_);
+					}
 					sva_item.nSNP_ ++;
 				}
 			}
@@ -5595,6 +5674,11 @@ void SUGEN::ScoreTests_PerSNPAnalysis_ (SVA_UTILS& sva_item)
 		sva_item.SNP_n2_count_[0] = sva_item.n2_count_;
 		sva_item.SNP_n_dose_[0] = sva_item.n_dose_;
 		sva_item.SNP_maf_[0] = sva_item.maf_;
+		if (method_ == logistic || method_ == right_censored)
+		{
+			sva_item.SNP_maf_case_[0] = sva_item.maf_case_;
+			sva_item.SNP_n_case_[0] = sva_item.n_case_;
+		}
 		if (method_ == LS) 
 		{
 			LinearScore_(sva_item);
@@ -5633,6 +5717,11 @@ void SUGEN::ScoreTests_SNPAnalysis_ (SVA_UTILS& sva_item)
 	sva_item.SNP_n2_count_.resize(sva_item.nSNP_); 
 	sva_item.SNP_n_dose_.resize(sva_item.nSNP_);
 	sva_item.SNP_maf_.resize(sva_item.nSNP_);
+	if (method_ == logistic || method_ == right_censored)
+	{
+		sva_item.SNP_maf_case_.resize(sva_item.nSNP_);
+		sva_item.SNP_n_case_.resize(sva_item.nSNP_);
+	}
 	
 	for (int nstudy=0; nstudy<N_study_; nstudy++)
 	{

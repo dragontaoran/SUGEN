@@ -1,31 +1,35 @@
 **Table of Contents**
 
-- [GENERAL INFORMATION](#)
-- [CITATION](#)
-- [DOWNLOAD AND INSTALLATION](#)
-	- [Download](#)
-	- [Installation](#)
-- [SYNOPSIS](#)
-- [OPTIONS](#)
-	- [Input Options](#)
-	- [Analysis Options](#)
-	- [Output Options](#)
-- [INPUT FILES](#)
-	- [Phenotype File](#)
-	- [VCF File](#)
-	- [Pairwise Inclusion Probability Matrix](#)
-	- [File that Contains the File Names of the Pairwise Inclusion Probability Matrices](#)
-	- [File that Contains the Variants for Conditional Analysis](#)
-	- [File that Contains Variants' Grouping Information in Gene-based Analysis](#)
-	- [File that Contains the Subset of Variants to be Analyzed in Single-Variant Analysis](#)
-- [OUTPUT FILES](#)
-	- [Wald Statistics](#)
-		- [Single-Variant Analysis Results](#)
-	- [Score Statistics](#)
-		- [Single-Variant Analysis Results](#)
-		- [Gene-Based Summary Statistics](#)
-- [VERSION HISTORY](#)
-- [CONTACT](#)
+- [GENERAL INFORMATION](#general-information)
+- [CITATION](#citation)
+- [DOWNLOAD AND INSTALLATION](#download-and-installation)
+  * [Download](#download)
+  * [Installation](#installation)
+- [SYNOPSIS](#synopsis)
+- [OPTIONS](#options)
+  * [Input Options](#input-options)
+  * [Analysis Options](#analysis-options)
+  * [Output Options](#output-options)
+- [INPUT FILES](#input-files)
+  * [Phenotype File](#phenotype-file)
+  * [VCF File](#vcf-file)
+  * [Pairwise Inclusion Probability Matrix](#pairwise-inclusion-probability-matrix)
+  * [File that Contains the File Names of the Pairwise Inclusion Probability Matrices](#file-that-contains-the-file-names-of-the-pairwise-inclusion-probability-matrices)
+  * [File that Contains the Variants for Conditional Analysis](#file-that-contains-the-variants-for-conditional-analysis)
+  * [File that Contains Variants' Grouping Information in Gene-based Analysis](#file-that-contains-variants--grouping-information-in-gene-based-analysis)
+  * [File that Contains the Subset of Variants to be Analyzed in Single-Variant Analysis](#file-that-contains-the-subset-of-variants-to-be-analyzed-in-single-variant-analysis)
+- [OUTPUT FILES](#output-files)
+  * [Wald Statistics](#wald-statistics)
+    + [Single-Variant Analysis Results](#single-variant-analysis-results)
+      - [Table 1: Column Description in Standard Association Analysis](#table-1--column-description-in-standard-association-analysis)
+      - [Table 2: Column Description in Conditional Analysis](#table-2--column-description-in-conditional-analysis)
+      - [Table 3: Column Description in Gene-Environment Interaction Analysis](#table-3--column-description-in-gene-environment-interaction-analysis)
+  * [Score Statistics](#score-statistics)
+    + [Single-Variant Analysis Results](#single-variant-analysis-results-1)
+      - [Table 4: Column Description in Standard Association Analysis](#table-4--column-description-in-standard-association-analysis)
+    + [Gene-Based Summary Statistics](#gene-based-summary-statistics)
+- [VERSION HISTORY](#version-history)
+- [CONTACT](#contact)
 
 # GENERAL INFORMATION
 SUGEN is a command-line software program written in C++ to implement the weighted and unweighted approaches described by [Lin et al. (2014)](http://www.cell.com/ajhg/abstract/S0002-9297(14)00471-6) for various types of association analysis under complex survey sampling. The current version of the program can accommodate continuous, binary, and right-censored time-to-event traits. It can perform single-variant and gene-based association analysis. In single-variant analysis, it can perform standard association analysis, conditional analysis, and gene-environment interaction analysis using Wald statistics. In standard association analysis, we include the SNP of interest and other covariates (if any) as predictors in the regression model. In conditional analysis, we include the SNP of interest, the SNPs that are conditioned on, and other covariates (if any) as predictors in the regression model. In gene-environment interaction analysis, we include the SNP of interest, the environment variables, the interactions between the SNP and environment variables, and other covariates (if any) as predictors in the regression model. In gene-based analysis, it generates the score statistics and covariance
@@ -375,9 +379,12 @@ covariate in the model.
     2. Modified the model-based covariance matrix estimator in gene-based tests so that it is more accurate for rare variants.
     3. Fixed a bug in reading the phenotype file when the subject ID or family ID column is the last column of the phenotype file.
 
-* 8.1 (current version, released on November 2, 2016)  
+* 8.1 (released on November 2, 2016)  
     1. Added *p*-values in the gene-environment interaction analysis output file.
     2. Fixed a bug in the weighted approach.
+
+* 8.2 (current version, released on January 5, 2017)
+	1. Added columns ALT_AF_CASE (ALT_AF_EVENT) and N_CASE (N_EVENT) to the single-variant analysis results file in logistic (Cox proportional hazards) regression.
     
 # CONTACT
 For questions, please contact [Ran Tao](https://sites.google.com/site/dragontaoran/home).
