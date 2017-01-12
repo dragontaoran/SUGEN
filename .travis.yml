@@ -43,4 +43,4 @@ before_install:
   - df -h
   - ulimit -a
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -qq gcc-4.8 g++-4.8 && sudo apt-get install -qq gcc-4.9 g++-4.9 && sudo apt-get install -qq gcc-5 g++5 && sudo apt-get install gcc-6 g++-6; fi
-script: make
+script: make CXX=$COMPILER CC=$COMPILER
