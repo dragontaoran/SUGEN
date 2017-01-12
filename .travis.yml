@@ -1,17 +1,6 @@
 language: cpp
 matrix:
-  allow_failures:
-    - os: osx
   include:
-    - os: linux
-      compiler: gcc
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-4.7']
-      env:
-        - COMPILER=g++-4.7
-
     - os: linux
       compiler: gcc
       addons:
@@ -48,94 +37,10 @@ matrix:
       env:
         - COMPILER=g++-6
 
-## clang's support for OpenMP requires extra work
-## just skip it for now
-#    - os: linux
-#      compiler: clang
-#      env:
-#        - COMPILER=clang++
-#
-#    - os: linux
-#      compiler: clang
-#      addons:
-#        apt:
-#          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.5']
-#          packages: ['clang-3.5']
-#      env:
-#        - COMPILER=clang++-3.5
-#
-#    - os: linux
-#      compiler: clang
-#      addons:
-#        apt:
-#          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.6']
-#          packages: ['clang-3.6']
-#      env:
-#        - COMPILER=clang++-3.6
-#
-#    - os: linux
-#      compiler: clang
-#      addons:
-#        apt:
-#          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
-#          packages: ['clang-3.7']
-#      env:
-#        - COMPILER=clang++-3.7
-#
-#    - os: linux
-#      compiler: clang
-#      addons:
-#        apt:
-#          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.8']
-#          packages: ['clang-3.8']
-#      env:
-#        - COMPILER=clang++-3.8
-#
-##    - os: linux
-##      compiler: clang
-##      addons:
-##        apt:
-##          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.9']
-##          packages: ['clang-3.9']
-##      env:
-##        - COMPILER=clang++-3.9
-# 
-#     - os: osx
-#       osx_image: xcode6.4
-#       compiler: clang
-#       env:
-#         - COMPILER=clang++
-# 
-#     - os: osx
-#       osx_image: xcode7.3
-#       compiler: clang
-#       env:
-#         - COMPILER=clang++
-# 
-#     - os: osx
-#       osx_image: xcode8.2
-#       compiler: clang
-#       env:
-#         - COMPILER=clang++
-    - os: osx
-      osx_image: xcode6.4
-      compiler: g++
-      env:
-        - COMPILER=g++
- 
-    - os: osx
-      osx_image: xcode7.3
-      compiler: g++
-      env:
-        - COMPILER=g++
-# refer: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=60670
-# for install a gcc on mac with OpenMP support
 before_install:
   - uname -a
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then free -m; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then vm_stat; fi
   - df -h
   - ulimit -a
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -q && sudo apt-get install -y -qq gfortran; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update && brew install gcc; brew reinstall gcc --without-multilib; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -qq gcc-4.8 g++-4.8 && sudo apt-get install -qq gcc-4.9 g++-4.9 && sudo apt-get install -qq gcc-5 g++5 && sudo apt-get install gcc-6 g++-6; fi
 script: make CXX=$COMPILER
