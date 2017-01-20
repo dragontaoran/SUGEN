@@ -175,7 +175,7 @@ This option is valid only when `--group group_file` is not specified and `--extr
 * `--extract-file extract_file`  
 Restricts single-variant analysis to variants in `extract_file`. The format of the variant IDs in `extract_file` is *chromosome:position*. This option is valid only when `--group group_file`, `--extract-chr chr`, and `--extract-range range` are not specified.
 
-* `--ge-output-detail` 
+* `--ge-output-detail`  
 In gene-environment interaction analysis, output the covariances between the genetic variant, environment variables, and gene-environment interaction variables. Otherwise, only output the variances of the genetic variant, environment variables, and gene-environment interaction variables.
 
 * `--group-maf maf_ub`  
