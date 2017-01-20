@@ -72,7 +72,7 @@ SUGEN [--pheno pheno_file] [--formula formula] [--id-col iid] [--family-col fid]
 [--left-truncation left_truncation_time] [--cond cond_file] [--ge envi_covs] [--score] \
 [--score-rescale rescale_rule] [--group group_file] [--hetero-variance strata] [--out-prefix out_prefix] \
 [--out-zip] [--extract-chr chr] [--extract-range range] [--extract-file extract_file] \
-[--group-maf maf_ub] [--group-callrate cr_lb]
+[--ge-output-detail][--group-maf maf_ub] [--group-callrate cr_lb]
 ```
 
 
@@ -175,6 +175,9 @@ This option is valid only when `--group group_file` is not specified and `--extr
 * `--extract-file extract_file`  
 Restricts single-variant analysis to variants in `extract_file`. The format of the variant IDs in `extract_file` is *chromosome:position*. This option is valid only when `--group group_file`, `--extract-chr chr`, and `--extract-range range` are not specified.
 
+* `--ge-output-detail`
+In gene-environment interaction analysis, output the covariances between the genetic variant, environment variables, and gene-environment interaction variables. Otherwise, only output the variances of the genetic variant, environment variables, and gene-environment variables.
+
 * `--group-maf maf_ub`  
 Specifies the minor allele frequency (MAF) upper bound for gene-based association analysis. `maf_ub` is a real number between 0 and 1. Its default value is *0.05*. Variants with MAFs greater than `maf_ub` will not be included in the analysis.
 
@@ -236,6 +239,10 @@ The rows represent varaints. The first row is the header line. Missing values ar
 | N_HET         | Number of subjects with one reference and one alternative alleles. |
 | N_ALT         | Number of subjects with two alternative alleles.                   |
 | N_DOSE        | Number of subjects with genotype dosages.                          |
+| ALT_AF_CASE   | Alternative allele frequency among cases included in logistic regression analysis.|
+| N_CASE        | Number of cases included in logistic regression analytsis.         |
+| ALT_AF_EVENT  | Alternative allele frequency among cases included in Cox proportional hazards regression analysis. |
+| N_EVENT       | Number of cases included in Cox proportional hazards regression analysis.
 | BETA          | Effect estimate.                                                   |
 | SE            | Standard error estimate of BETA.                                   |
 | PVALUE        | *p*-value.                                                         |
