@@ -225,27 +225,27 @@ Each row is a variant ID, which should be in *chromosome:position* format. Note 
 The rows represent varaints. The first row is the header line. Missing values are denoted by *NA*. Tables 1-3 describe the columns of `prefix.wald.out` in standard association analysis, conditional analysis, and gene-environment interaction analysis, respectively.
 
 #### Table 1: Column Description in Standard Association Analysis
-| Column Name   | Description                                                        |
-|---------------|--------------------------------------------------------------------|
-| CHROM         | Chromosome.                                                        |
-| POS           | Position.                                                          |
-| VCF_ID        | Varaint ID in the VCF file.                                        |
-| REF           | Reference allele.                                                  |
-| ALT           | Alternative allele.                                                |
-| ALT_AF        | Alternative allele frequency.                                      |
-| ALT_AC        | Alternative allele count.                                          |
-| N_INFORMATIVE | Number of subjects included in the analysis.                       |
-| N_REF         | Number of subjects with two reference alleles.                     |
-| N_HET         | Number of subjects with one reference and one alternative alleles. |
-| N_ALT         | Number of subjects with two alternative alleles.                   |
-| N_DOSE        | Number of subjects with genotype dosages.                          |
-| ALT_AF_CASE   | Alternative allele frequency among cases included in logistic regression analysis.|
-| N_CASE        | Number of cases included in logistic regression analytsis.         |
-| ALT_AF_EVENT  | Alternative allele frequency among cases included in Cox proportional hazards regression analysis. |
-| N_EVENT       | Number of cases included in Cox proportional hazards regression analysis.
-| BETA          | Effect estimate.                                                   |
-| SE            | Standard error estimate of BETA.                                   |
-| PVALUE        | *p*-value.                                                         |
+| Column Name   | Description                                                                               |
+|---------------|-------------------------------------------------------------------------------------------|
+| CHROM         | Chromosome.                                                                               |
+| POS           | Position.                                                                                 |
+| VCF_ID        | Varaint ID in the VCF file.                                                               |
+| REF           | Reference allele.                                                                         |
+| ALT           | Alternative allele.                                                                       |
+| ALT_AF        | Alternative allele frequency.                                                             |
+| ALT_AC        | Alternative allele count.                                                                 |
+| N_INFORMATIVE | Number of subjects included in the analysis.                                              |
+| N_REF         | Number of subjects with two reference alleles.                                            |
+| N_HET         | Number of subjects with one reference and one alternative alleles.                        |
+| N_ALT         | Number of subjects with two alternative alleles.                                          |
+| N_DOSE        | Number of subjects with genotype dosages.                                                 |
+| ALT_AF_CASE   | Alternative allele frequency among cases included in logistic regression.                 |
+| N_CASE        | Number of cases included in logistic regression.                                          |
+| ALT_AF_EVENT  | Alternative allele frequency among cases included in Cox proportional hazards regression. |
+| N_EVENT       | Number of cases included in Cox proportional hazards regression.                          |
+| BETA          | Effect estimate.                                                                          |
+| SE            | Standard error estimate of BETA.                                                          |
+| PVALUE        | *p*-value.                                                                                |
 
 #### Table 2: Column Description in Conditional Analysis
 | Column Name      | Description                                                        |
@@ -262,6 +262,10 @@ The rows represent varaints. The first row is the header line. Missing values ar
 | N_HET            | Number of subjects with one reference and one alternative alleles. |
 | N_ALT            | Number of subjects with two alternative alleles.                   |
 | N_DOSE           | Number of subjects with genotype dosages.                          |
+| ALT_AF_CASE      | Alternative allele frequency among cases included in logistic regression.                 |
+| N_CASE           | Number of cases included in logistic regression.                                          |
+| ALT_AF_EVENT     | Alternative allele frequency among cases included in Cox proportional hazards regression. |
+| N_EVENT          | Number of cases included in Cox proportional hazards regression.                          |
 | BETA             | Effect estimate.                                                   |
 | SE               | Standard error estimate of BETA.                                   |
 | PVALUE           | *p*-value.                                                         |
@@ -284,6 +288,10 @@ The rows represent varaints. The first row is the header line. Missing values ar
 | N_HET                 | Number of subjects with one reference and one alternative alleles.                                                |
 | N_ALT                 | Number of subjects with two alternative alleles.                                                                  |
 | N_DOSE                | Number of subjects with genotype dosages.                                                                         |
+| ALT_AF_CASE   | Alternative allele frequency among cases included in logistic regression.                 |
+| N_CASE        | Number of cases included in logistic regression.                                          |
+| ALT_AF_EVENT  | Alternative allele frequency among cases included in Cox proportional hazards regression. |
+| N_EVENT       | Number of cases included in Cox proportional hazards regression.                          |
 | PVALUE_G              | *p*-value of the variant.                                                                                         |
 | PVALUE_INTER          | *p*-value of the interaction term(s) between the variant and environment variable(s).                             |
 | PVALUE_BOTH           | *p*-value of both the variant and gene-environment interaction terms.                                             |
