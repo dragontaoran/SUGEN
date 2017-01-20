@@ -239,10 +239,10 @@ The rows represent varaints. The first row is the header line. Missing values ar
 | N_HET         | Number of subjects with one reference and one alternative alleles.                        |
 | N_ALT         | Number of subjects with two alternative alleles.                                          |
 | N_DOSE        | Number of subjects with genotype dosages.                                                 |
-| ALT_AF_CASE   | Alternative allele frequency among cases included in logistic regression.                 |
-| N_CASE        | Number of cases included in logistic regression.                                          |
-| ALT_AF_EVENT  | Alternative allele frequency among cases included in Cox proportional hazards regression. |
-| N_EVENT       | Number of cases included in Cox proportional hazards regression.                          |
+| ALT_AF_CASE   | Alternative allele frequency among cases. This column is present only when `model=logistic`. |
+| N_CASE        | Number of cases included in the analysis. This column is present only when `model=logistic`. |
+| ALT_AF_EVENT  | Alternative allele frequency among cases. This column is present only when `model=coxph`.    |
+| N_EVENT       | Number of cases included in the analysis. This column is present only when `model=coxph`.    |
 | BETA          | Effect estimate.                                                                          |
 | SE            | Standard error estimate of BETA.                                                          |
 | PVALUE        | *p*-value.                                                                                |
@@ -262,10 +262,10 @@ The rows represent varaints. The first row is the header line. Missing values ar
 | N_HET            | Number of subjects with one reference and one alternative alleles. |
 | N_ALT            | Number of subjects with two alternative alleles.                   |
 | N_DOSE           | Number of subjects with genotype dosages.                          |
-| ALT_AF_CASE      | Alternative allele frequency among cases included in logistic regression.                 |
-| N_CASE           | Number of cases included in logistic regression.                                          |
-| ALT_AF_EVENT     | Alternative allele frequency among cases included in Cox proportional hazards regression. |
-| N_EVENT          | Number of cases included in Cox proportional hazards regression.                          |
+| ALT_AF_CASE   | Alternative allele frequency among cases. This column is present only when `model=logistic`. |
+| N_CASE        | Number of cases included in the analysis. This column is present only when `model=logistic`. |
+| ALT_AF_EVENT  | Alternative allele frequency among cases. This column is present only when `model=coxph`.    |
+| N_EVENT       | Number of cases included in the analysis. This column is present only when `model=coxph`.    |
 | BETA             | Effect estimate.                                                   |
 | SE               | Standard error estimate of BETA.                                   |
 | PVALUE           | *p*-value.                                                         |
@@ -288,10 +288,10 @@ The rows represent varaints. The first row is the header line. Missing values ar
 | N_HET                 | Number of subjects with one reference and one alternative alleles.                                                |
 | N_ALT                 | Number of subjects with two alternative alleles.                                                                  |
 | N_DOSE                | Number of subjects with genotype dosages.                                                                         |
-| ALT_AF_CASE   | Alternative allele frequency among cases included in logistic regression.                 |
-| N_CASE        | Number of cases included in logistic regression.                                          |
-| ALT_AF_EVENT  | Alternative allele frequency among cases included in Cox proportional hazards regression. |
-| N_EVENT       | Number of cases included in Cox proportional hazards regression.                          |
+| ALT_AF_CASE   | Alternative allele frequency among cases. This column is present only when `model=logistic`. |
+| N_CASE        | Number of cases included in the analysis. This column is present only when `model=logistic`. |
+| ALT_AF_EVENT  | Alternative allele frequency among cases. This column is present only when `model=coxph`.    |
+| N_EVENT       | Number of cases included in the analysis. This column is present only when `model=coxph`.    |
 | PVALUE_G              | *p*-value of the variant.                                                                                         |
 | PVALUE_INTER          | *p*-value of the interaction term(s) between the variant and environment variable(s).                             |
 | PVALUE_BOTH           | *p*-value of both the variant and gene-environment interaction terms.                                             |
@@ -301,9 +301,9 @@ The rows represent varaints. The first row is the header line. Missing values ar
 | COV_G_G               | Variance estimate of BETA_G.                                                                                      |
 | COV_*envi*_*envi*     | Variance estimate of BETA_*envi*.                                                                                 |
 | COV_G:*envi*_G:*envi* | Variance estimate of BETA_G:*envi*.                                                                               |
-| COV_G_*envi*          | Covariance estimate between BETA_G and BETA_*envi*.                                                               |
-| COV_G_G:*envi*        | Covariance estimate between BETA_G and BETA_G:*envi*.                                                             |
-| COV_*envi*_G:*envi*   | Covariance estimate between BETA_*envi* and BETA_G:*envi*.                                                        |
+| COV_G_*envi*          | Covariance estimate between BETA_G and BETA_*envi*. This column is present only when `--ge-output-detail` is specified.                                                             |
+| COV_G_G:*envi*        | Covariance estimate between BETA_G and BETA_G:*envi*. This column is present only when `--ge-output-detail` is specified.                                                             |
+| COV_*envi*_G:*envi*   | Covariance estimate between BETA_*envi* and BETA_G:*envi*. This column is present only when `--ge-output-detail` is specified.                                                        |
 
 ## Score Statistics
 ### Single-Variant Analysis Results
