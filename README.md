@@ -385,8 +385,11 @@ covariate in the model.
     1. Added *p*-values in the gene-environment interaction analysis output file.
     2. Fixed a bug in the weighted approach.
 
-* 8.2 (current version, released on January 5, 2017)
+* 8.2 (released on January 5, 2017)
 	1. Added columns ALT_AF_CASE (ALT_AF_EVENT) and N_CASE (N_EVENT) to the single-variant analysis results file in logistic (Cox proportional hazards) regression.
+	
+* 8.3 (current version, released on January 18, 2017)
+	1. Added the `--ge-output-detail` option.
     
 # CONTACT
 For questions, please contact [Ran Tao](https://sites.google.com/site/dragontaoran/home).
