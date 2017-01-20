@@ -177,6 +177,7 @@ SUGEN::SUGEN ()
 	flag_strata_ = false;
 	flag_left_truncation_ = false;
 	flag_pairwise_inclusion_prob_ = false;
+	flag_ge_full_output_ = false;
 	FN_COND_SNPS_ = "NULL";
 	formula_ = "NULL";
 	id_col_ = "IID";
@@ -331,6 +332,11 @@ void SUGEN::CommandLineArgs_ (const int argc, char *argv[])
 			flag_GE = true;
 			continue;
 		}
+		if (strcmp(argv[i], "--ge-output-detail") == 0)
+		{
+			flag_ge_full_output_ = true;
+			continue;
+		}		
 		if (strcmp(argv[i], "--dosage") == 0)
 		{
 			flag_dosage_ = true;
@@ -577,7 +583,7 @@ void SUGEN::CommandLineArgs_ (const int argc, char *argv[])
 	{
 		stdError("Can not open log file " + FN_log_ + " !");
 	}		
-	FO_log_ << "SUGEN v8.2 (01/05/2017) starts at " << asctime(localtime(&now)) << endl;
+	FO_log_ << "SUGEN v8.3 (01/18/2017) starts at " << asctime(localtime(&now)) << endl;
 	FO_log_ << "Author: Ran Tao" << endl;
 	FO_log_ << "Email: r.tao@vanderbilt.edu" << endl;
 	FO_log_ << "Documentation & citation: https://github.com/dragontaoran/SUGEN" << endl << endl;
@@ -678,6 +684,11 @@ void SUGEN::CommandLineArgs_ (const int argc, char *argv[])
 				FO_log_ << ' ' << ENVI_names_[i];
 			}
 			FO_log_ << "." << endl;
+			if (flag_ge_full_output_)
+			{
+				FO_log_ << "Output the covariances of the regression coefficient estimators of the SNP, environment variables, and SNP by environment interaction variables.";
+				FO_log_ << endl;
+			}
 		} 
 		else if (snp_analysis_mode_ == COND) 
 		{
@@ -1748,42 +1759,70 @@ void SUGEN::SingleVariantAnalysis_Output_ (SVA_UTILS& sva_item, const SVA_OUTPUT
 			}
 			
 			*sva_item.FO_out_ << "\tCOV_G_G";
-			for (int i=0; i<nadd_; i++) 
+			if (flag_ge_full_output_)
 			{
-				*sva_item.FO_out_ << "\tCOV_G_"+ENVI_names_[i];
-			}
-			for (int i=0; i<nadd_; i++) 
-			{
-				*sva_item.FO_out_ << "\tCOV_G_G:"+ENVI_names_[i];
-			}
-			
-			for (int i=0; i<nadd_; i++) 
-			{
-				for (int j=i; j<nadd_; j++) 
+				for (int i=0; i<nadd_; i++) 
 				{
-					*sva_item.FO_out_ << "\tCOV_"+ENVI_names_[i] << "_" << ENVI_names_[j];
+					*sva_item.FO_out_ << "\tCOV_G_"+ENVI_names_[i];
 				}
-				for (int j=0; j<nadd_; j++) 
+				for (int i=0; i<nadd_; i++) 
 				{
-					*sva_item.FO_out_ << "\tCOV_"+ENVI_names_[i] << "_G:" << ENVI_names_[j];
+					*sva_item.FO_out_ << "\tCOV_G_G:"+ENVI_names_[i];
 				}
 			}
 			
 			for (int i=0; i<nadd_; i++) 
 			{
-				for (int j=i; j<nadd_; j++) 
+				if (flag_ge_full_output_)
 				{
-					*sva_item.FO_out_ << "\tCOV_G:"+ENVI_names_[i] << "_G:" << ENVI_names_[j];
+					for (int j=i; j<nadd_; j++) 
+					{
+						*sva_item.FO_out_ << "\tCOV_"+ENVI_names_[i] << "_" << ENVI_names_[j];
+					}
+					for (int j=0; j<nadd_; j++) 
+					{
+						*sva_item.FO_out_ << "\tCOV_"+ENVI_names_[i] << "_G:" << ENVI_names_[j];
+					}
+				}
+				else
+				{
+					*sva_item.FO_out_ << "\tCOV_"+ENVI_names_[i] << "_" << ENVI_names_[i];
+				}
+			}
+			
+			for (int i=0; i<nadd_; i++) 
+			{
+				if (flag_ge_full_output_)
+				{
+					for (int j=i; j<nadd_; j++) 
+					{
+						*sva_item.FO_out_ << "\tCOV_G:"+ENVI_names_[i] << "_G:" << ENVI_names_[j];
+					}
+				}
+				else
+				{
+					*sva_item.FO_out_ << "\tCOV_G:"+ENVI_names_[i] << "_G:" << ENVI_names_[i];
 				}
 			}						
 		} 
 		else if (sva_output_type == sva_results_miss) 
 		{
 			*sva_item.FO_out_ << "\tNA\tNA\tNA";
-			for (int i=0; i<(1+2*nadd_)*(2+nadd_); i++) 
+			if (flag_ge_full_output_)
 			{
-				*sva_item.FO_out_ << "\tNA";
-			}			
+				for (int i=0; i<(1+2*nadd_)*(2+nadd_); i++) 
+				{
+					*sva_item.FO_out_ << "\tNA";
+				}
+			}
+			else
+			{
+				for (int i=0; i<(1+2*nadd_)*2; i++) 
+				{
+					*sva_item.FO_out_ << "\tNA";
+				}				
+			}
+			
 		} 
 		else if (sva_output_type == sva_no_miss) 
 		{
@@ -1816,32 +1855,49 @@ void SUGEN::SingleVariantAnalysis_Output_ (SVA_UTILS& sva_item, const SVA_OUTPUT
 			}
 		
 			*sva_item.FO_out_ << "\t" << sva_item.vartheta_(0,0);
-			for (int i=0; i<nadd_; i++) 
+			if (flag_ge_full_output_)
 			{
-				*sva_item.FO_out_ << "\t" << sva_item.vartheta_(0,nhead_+nadd_+ENVI_col_(i));
-			}
-			for (int i=0; i<nadd_; i++) 
-			{
-				*sva_item.FO_out_ << "\t" << sva_item.vartheta_(0,nhead_+i);
-			}
-			
-			for (int i=0; i<nadd_; i++) 
-			{
-				for (int j=i; j<nadd_; j++) 
+				for (int i=0; i<nadd_; i++) 
 				{
-					*sva_item.FO_out_ << "\t" << sva_item.vartheta_(nhead_+nadd_+ENVI_col_(i),nhead_+nadd_+ENVI_col_(j));
+					*sva_item.FO_out_ << "\t" << sva_item.vartheta_(0,nhead_+nadd_+ENVI_col_(i));
 				}
-				for (int j=0; j<nadd_; j++) 
+				for (int i=0; i<nadd_; i++) 
 				{
-					*sva_item.FO_out_ << "\t" << sva_item.vartheta_(nhead_+nadd_+ENVI_col_(i),nhead_+j);
+					*sva_item.FO_out_ << "\t" << sva_item.vartheta_(0,nhead_+i);
 				}
 			}
 			
 			for (int i=0; i<nadd_; i++) 
 			{
-				for (int j=i; j<nadd_; j++) 
+				if (flag_ge_full_output_)
 				{
-					*sva_item.FO_out_ << "\t" << sva_item.vartheta_(nhead_+i,nhead_+j);
+					for (int j=i; j<nadd_; j++) 
+					{
+						*sva_item.FO_out_ << "\t" << sva_item.vartheta_(nhead_+nadd_+ENVI_col_(i),nhead_+nadd_+ENVI_col_(j));
+					}
+					for (int j=0; j<nadd_; j++) 
+					{
+						*sva_item.FO_out_ << "\t" << sva_item.vartheta_(nhead_+nadd_+ENVI_col_(i),nhead_+j);
+					}
+				}
+				else
+				{
+					*sva_item.FO_out_ << "\t" << sva_item.vartheta_(nhead_+nadd_+ENVI_col_(i),nhead_+nadd_+ENVI_col_(i));				
+				}
+			}
+			
+			for (int i=0; i<nadd_; i++) 
+			{
+				if (flag_ge_full_output_)
+				{
+					for (int j=i; j<nadd_; j++) 
+					{
+						*sva_item.FO_out_ << "\t" << sva_item.vartheta_(nhead_+i,nhead_+j);
+					}
+				}
+				else
+				{
+					*sva_item.FO_out_ << "\t" << sva_item.vartheta_(nhead_+i,nhead_+i);
 				}
 			}
 			

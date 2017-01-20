@@ -186,6 +186,7 @@ struct SUGEN {
 	bool flag_strata_;
 	bool flag_left_truncation_;
 	bool flag_pairwise_inclusion_prob_;
+	bool flag_ge_full_output_;
 	string formula_; // regression formula in the form Y=X1+X2+X3
 	string id_col_; // ID column name 
 	string family_col_; // family ID column name
