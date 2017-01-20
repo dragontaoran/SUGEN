@@ -175,8 +175,8 @@ This option is valid only when `--group group_file` is not specified and `--extr
 * `--extract-file extract_file`  
 Restricts single-variant analysis to variants in `extract_file`. The format of the variant IDs in `extract_file` is *chromosome:position*. This option is valid only when `--group group_file`, `--extract-chr chr`, and `--extract-range range` are not specified.
 
-* `--ge-output-detail`
-In gene-environment interaction analysis, output the covariances between the genetic variant, environment variables, and gene-environment interaction variables. Otherwise, only output the variances of the genetic variant, environment variables, and gene-environment variables.
+* `--ge-output-detail` 
+In gene-environment interaction analysis, output the covariances between the genetic variant, environment variables, and gene-environment interaction variables. Otherwise, only output the variances of the genetic variant, environment variables, and gene-environment interaction variables.
 
 * `--group-maf maf_ub`  
 Specifies the minor allele frequency (MAF) upper bound for gene-based association analysis. `maf_ub` is a real number between 0 and 1. Its default value is *0.05*. Variants with MAFs greater than `maf_ub` will not be included in the analysis.
