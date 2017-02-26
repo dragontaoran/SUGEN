@@ -403,8 +403,11 @@ covariate in the model.
 * 8.2 (released on January 5, 2017)
 	1. Added columns ALT_AF_CASE (ALT_AF_EVENT) and N_CASE (N_EVENT) to the single-variant analysis results file in logistic (Cox proportional hazards) regression.
 	
-* 8.3 (current version, released on January 18, 2017)
+* 8.3 (released on January 18, 2017)
 	1. Added the `--ge-output-detail` option.
-    
+
+* 8.4 (current version, released on February 26, 2017)
+    1. Produced warnings instead of errors when there is no SNP to be conditioned on in conditional analysis.
+
 # CONTACT
 For questions, please contact [Ran Tao](https://sites.google.com/site/dragontaoran/home).
