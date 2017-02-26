@@ -1036,7 +1036,9 @@ void SUGEN::InputData_CheckGeno_ (INPUT_UTILS& input_item)
 		} 
 		else 
 		{
-			error(FO_log_, "Error: There is no SNP in "+FN_COND_SNPS_+" that is also in the VCF file!");
+			FO_log_ << "Warning: There is no SNP in "+FN_COND_SNPS_+" that is also in the VCF file!" << endl;
+			FO_log_ << "Warning: No conditional analysis will be performed!" << endl;
+			exit(0);
 		}
 		
 		FI.close();
