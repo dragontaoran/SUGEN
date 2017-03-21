@@ -1837,12 +1837,24 @@ void SUGEN::SingleVariantAnalysis_Output_ (SVA_UTILS& sva_item, const SVA_OUTPUT
 			
 			double test_statistic;
 			test_statistic = sva_item.GE_U_(0)*sva_item.GE_U_(0)/sva_item.GE_V_(0,0);
+			if (test_statistic < 0.)
+			{
+				test_statistic = 0.;
+			}
 			sva_item.pvalue_ = gammq(0.5, test_statistic/2.);
 			*sva_item.FO_out_ << "\t" << sva_item.pvalue_;
 			test_statistic = (sva_item.GE_U_.tail(nadd_).transpose()*sva_item.GE_V_.bottomRightCorner(nadd_, nadd_).inverse()*sva_item.GE_U_.tail(nadd_))(0,0);
+			if (test_statistic < 0.)
+			{
+				test_statistic = 0.;
+			}
 			sva_item.pvalue_ = gammq(0.5*nadd_, test_statistic/2.);
 			*sva_item.FO_out_ << "\t" << sva_item.pvalue_;
 			test_statistic = sva_item.GE_U_.transpose()*sva_item.GE_V_.inverse()*sva_item.GE_U_;
+			if (test_statistic < 0.)
+			{
+				test_statistic = 0.;
+			}
 			sva_item.pvalue_ = gammq(0.5*(nadd_+1), test_statistic/2.);
 			*sva_item.FO_out_ << "\t" << sva_item.pvalue_;
 			
