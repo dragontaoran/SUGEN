@@ -583,7 +583,7 @@ void SUGEN::CommandLineArgs_ (const int argc, char *argv[])
 	{
 		stdError("Can not open log file " + FN_log_ + " !");
 	}		
-	FO_log_ << "SUGEN v8.3 (01/18/2017) starts at " << asctime(localtime(&now)) << endl;
+	FO_log_ << "SUGEN v8.4 (02/26/2017) starts at " << asctime(localtime(&now)) << endl;
 	FO_log_ << "Author: Ran Tao" << endl;
 	FO_log_ << "Email: r.tao@vanderbilt.edu" << endl;
 	FO_log_ << "Documentation & citation: https://github.com/dragontaoran/SUGEN" << endl << endl;
