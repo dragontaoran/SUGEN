@@ -406,8 +406,11 @@ covariate in the model.
 * 8.3 (released on January 18, 2017)
 	1. Added the `--ge-output-detail` option.
 
-* 8.4 (current version, released on February 26, 2017)
+* 8.4 (released on February 26, 2017)
     1. Produced warnings instead of errors when there is no SNP to be conditioned on in conditional analysis.
+
+* 8.5 (current version, released on March 21, 2017)
+	1. Fixed a bug in the *p*-value calculation in gene-environment interaction analysis.
 
 # CONTACT
 For questions, please contact [Ran Tao](https://sites.google.com/site/dragontaoran/home).
