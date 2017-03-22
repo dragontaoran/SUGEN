@@ -301,7 +301,7 @@ double gammq (double a, double x);
 void gser (double *gamser, double a, double x, double *gln);
 void gcf (double *gammcf, double a, double x, double *gln);
 double gammln (double xx);
-bool CheckSinglularVar(const Ref<const MatrixXd>& vartheta); // Check if the covaraince matrix of the parameter estimates is singular or not
+bool CheckSingularVar(const Ref<const MatrixXd>& vartheta); // Check if the covaraince matrix of the parameter estimates is singular or not
 
 template <typename T1, typename T2> 
 void dim (T1& nrow, T2& ncol, const string file, const bool header, ofstream& FO_log) {

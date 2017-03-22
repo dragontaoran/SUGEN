@@ -136,7 +136,7 @@ double gammln (double xx)
     return -tmp+log(2.5066282746310005*ser/x);
 } // gammln
 
-bool CheckSinglularVar (const Ref<const MatrixXd>& vartheta) 
+bool CheckSingularVar (const Ref<const MatrixXd>& vartheta) 
 {	
 	/**** Check if the covaraince matrix of the parameter *******************************/
 	/**** estimates is valid or not *****************************************************/
@@ -157,7 +157,7 @@ bool CheckSinglularVar (const Ref<const MatrixXd>& vartheta)
 		return true;
 	}
 	return false;
-} // CheckSinglularVar
+} // CheckSingularVar
 
 SUGEN::SUGEN () 
 {	
@@ -1824,7 +1824,6 @@ void SUGEN::SingleVariantAnalysis_Output_ (SVA_UTILS& sva_item, const SVA_OUTPUT
 					*sva_item.FO_out_ << "\tNA";
 				}				
 			}
-			
 		} 
 		else if (sva_output_type == sva_no_miss) 
 		{
@@ -1836,85 +1835,117 @@ void SUGEN::SingleVariantAnalysis_Output_ (SVA_UTILS& sva_item, const SVA_OUTPUT
 			sva_item.GE_V_.bottomRightCorner(nadd_,nadd_) = sva_item.vartheta_.block(nhead_,nhead_,nadd_,nadd_);
 			
 			double test_statistic;
+			bool flag_singular = false;
 			test_statistic = sva_item.GE_U_(0)*sva_item.GE_U_(0)/sva_item.GE_V_(0,0);
-			if (test_statistic < 0.)
+			if (test_statistic <= 0. || ::isnan(test_statistic) || ::isinf(test_statistic))
 			{
-				test_statistic = 0.;
+				*sva_item.FO_out_ << "\tNA";
+				flag_singular = true;
 			}
-			sva_item.pvalue_ = gammq(0.5, test_statistic/2.);
-			*sva_item.FO_out_ << "\t" << sva_item.pvalue_;
+			else
+			{
+				sva_item.pvalue_ = gammq(0.5, test_statistic/2.);
+				*sva_item.FO_out_ << "\t" << sva_item.pvalue_;
+			}
 			test_statistic = (sva_item.GE_U_.tail(nadd_).transpose()*sva_item.GE_V_.bottomRightCorner(nadd_, nadd_).inverse()*sva_item.GE_U_.tail(nadd_))(0,0);
-			if (test_statistic < 0.)
+			if (test_statistic <= 0. || ::isnan(test_statistic) || ::isinf(test_statistic))
 			{
-				test_statistic = 0.;
+				*sva_item.FO_out_ << "\tNA";
+				flag_singular = true;
 			}
-			sva_item.pvalue_ = gammq(0.5*nadd_, test_statistic/2.);
-			*sva_item.FO_out_ << "\t" << sva_item.pvalue_;
+			else
+			{
+				sva_item.pvalue_ = gammq(0.5*nadd_, test_statistic/2.);
+				*sva_item.FO_out_ << "\t" << sva_item.pvalue_;
+			}
 			test_statistic = sva_item.GE_U_.transpose()*sva_item.GE_V_.inverse()*sva_item.GE_U_;
-			if (test_statistic < 0.)
+			if (test_statistic <= 0. || ::isnan(test_statistic) || ::isinf(test_statistic))
 			{
-				test_statistic = 0.;
+				*sva_item.FO_out_ << "\tNA";
+				flag_singular = true;
 			}
-			sva_item.pvalue_ = gammq(0.5*(nadd_+1), test_statistic/2.);
-			*sva_item.FO_out_ << "\t" << sva_item.pvalue_;
-			
-			*sva_item.FO_out_ << "\t" << sva_item.theta_(0);
-			for (int i=0; i<nadd_; i++) 
+			else
 			{
-				*sva_item.FO_out_ << "\t" << sva_item.theta_(nhead_+nadd_+ENVI_col_(i));
-			}
-			for (int i=0; i<nadd_; i++) 
-			{
-				*sva_item.FO_out_ << "\t" << sva_item.theta_(nhead_+i);
-			}
-		
-			*sva_item.FO_out_ << "\t" << sva_item.vartheta_(0,0);
-			if (flag_ge_full_output_)
-			{
-				for (int i=0; i<nadd_; i++) 
-				{
-					*sva_item.FO_out_ << "\t" << sva_item.vartheta_(0,nhead_+nadd_+ENVI_col_(i));
-				}
-				for (int i=0; i<nadd_; i++) 
-				{
-					*sva_item.FO_out_ << "\t" << sva_item.vartheta_(0,nhead_+i);
-				}
+				sva_item.pvalue_ = gammq(0.5*(nadd_+1), test_statistic/2.);
+				*sva_item.FO_out_ << "\t" << sva_item.pvalue_;
 			}
 			
-			for (int i=0; i<nadd_; i++) 
+			if (flag_singular)
 			{
 				if (flag_ge_full_output_)
 				{
-					for (int j=i; j<nadd_; j++) 
+					for (int i=0; i<(1+2*nadd_)*(2+nadd_); i++) 
 					{
-						*sva_item.FO_out_ << "\t" << sva_item.vartheta_(nhead_+nadd_+ENVI_col_(i),nhead_+nadd_+ENVI_col_(j));
-					}
-					for (int j=0; j<nadd_; j++) 
-					{
-						*sva_item.FO_out_ << "\t" << sva_item.vartheta_(nhead_+nadd_+ENVI_col_(i),nhead_+j);
+						*sva_item.FO_out_ << "\tNA";
 					}
 				}
 				else
 				{
-					*sva_item.FO_out_ << "\t" << sva_item.vartheta_(nhead_+nadd_+ENVI_col_(i),nhead_+nadd_+ENVI_col_(i));				
+					for (int i=0; i<(1+2*nadd_)*2; i++) 
+					{
+						*sva_item.FO_out_ << "\tNA";
+					}				
 				}
 			}
-			
-			for (int i=0; i<nadd_; i++) 
+			else
 			{
+				*sva_item.FO_out_ << "\t" << sva_item.theta_(0);
+				for (int i=0; i<nadd_; i++) 
+				{
+					*sva_item.FO_out_ << "\t" << sva_item.theta_(nhead_+nadd_+ENVI_col_(i));
+				}
+				for (int i=0; i<nadd_; i++) 
+				{
+					*sva_item.FO_out_ << "\t" << sva_item.theta_(nhead_+i);
+				}
+			
+				*sva_item.FO_out_ << "\t" << sva_item.vartheta_(0,0);
 				if (flag_ge_full_output_)
 				{
-					for (int j=i; j<nadd_; j++) 
+					for (int i=0; i<nadd_; i++) 
 					{
-						*sva_item.FO_out_ << "\t" << sva_item.vartheta_(nhead_+i,nhead_+j);
+						*sva_item.FO_out_ << "\t" << sva_item.vartheta_(0,nhead_+nadd_+ENVI_col_(i));
+					}
+					for (int i=0; i<nadd_; i++) 
+					{
+						*sva_item.FO_out_ << "\t" << sva_item.vartheta_(0,nhead_+i);
 					}
 				}
-				else
+				
+				for (int i=0; i<nadd_; i++) 
 				{
-					*sva_item.FO_out_ << "\t" << sva_item.vartheta_(nhead_+i,nhead_+i);
+					if (flag_ge_full_output_)
+					{
+						for (int j=i; j<nadd_; j++) 
+						{
+							*sva_item.FO_out_ << "\t" << sva_item.vartheta_(nhead_+nadd_+ENVI_col_(i),nhead_+nadd_+ENVI_col_(j));
+						}
+						for (int j=0; j<nadd_; j++) 
+						{
+							*sva_item.FO_out_ << "\t" << sva_item.vartheta_(nhead_+nadd_+ENVI_col_(i),nhead_+j);
+						}
+					}
+					else
+					{
+						*sva_item.FO_out_ << "\t" << sva_item.vartheta_(nhead_+nadd_+ENVI_col_(i),nhead_+nadd_+ENVI_col_(i));				
+					}
+				}
+				
+				for (int i=0; i<nadd_; i++) 
+				{
+					if (flag_ge_full_output_)
+					{
+						for (int j=i; j<nadd_; j++) 
+						{
+							*sva_item.FO_out_ << "\t" << sva_item.vartheta_(nhead_+i,nhead_+j);
+						}
+					}
+					else
+					{
+						*sva_item.FO_out_ << "\t" << sva_item.vartheta_(nhead_+i,nhead_+i);
+					}
 				}
 			}
-			
 		}
 		/**** gene-environment interaction analysis *************************************/
 	}
@@ -3030,7 +3061,7 @@ void SUGEN::SingleVariantAnalysis_PerSNPAnalysis_ (SVA_UTILS& sva_item)
 					<< ": In linear regression allowing heterogeneous variance, algorithm does not converge!" << endl;
 				SingleVariantAnalysis_Output_(sva_item, sva_results_miss); 
 			}
-			else if (CheckSinglularVar(sva_item.vartheta_))				
+			else if (CheckSingularVar(sva_item.vartheta_))				
 			{
 				FO_log_ << VCF_record_.getChromStr() << ":" << VCF_record_.get1BasedPosition() << ": Singular Variance Estimation!" << endl;
 				SingleVariantAnalysis_Output_(sva_item, sva_results_miss);
@@ -3047,7 +3078,7 @@ void SUGEN::SingleVariantAnalysis_PerSNPAnalysis_ (SVA_UTILS& sva_item)
 				FO_log_ << VCF_record_.getChromStr() << ":" << VCF_record_.get1BasedPosition() << ": In logistic regression, algorithm does not converge!" << endl;
 				SingleVariantAnalysis_Output_(sva_item, sva_results_miss); 
 			}
-			else if (CheckSinglularVar(sva_item.vartheta_)) 
+			else if (CheckSingularVar(sva_item.vartheta_)) 
 			{
 				FO_log_ << VCF_record_.getChromStr() << ":" << VCF_record_.get1BasedPosition() << ": Singular Variance Estimation!" << endl;
 				SingleVariantAnalysis_Output_(sva_item, sva_results_miss);
@@ -3063,7 +3094,7 @@ void SUGEN::SingleVariantAnalysis_PerSNPAnalysis_ (SVA_UTILS& sva_item)
 				FO_log_ << VCF_record_.getChromStr() << ":" << VCF_record_.get1BasedPosition() << ": In Cox proportional hazards regression, algorithm does not converge!" << endl;
 				SingleVariantAnalysis_Output_(sva_item, sva_results_miss); 
 			}
-			else if (CheckSinglularVar(sva_item.vartheta_)) 
+			else if (CheckSingularVar(sva_item.vartheta_)) 
 			{
 				FO_log_ << VCF_record_.getChromStr() << ":" << VCF_record_.get1BasedPosition() << ": Singular Variance Estimation!" << endl;
 				SingleVariantAnalysis_Output_(sva_item, sva_results_miss);
