@@ -409,8 +409,11 @@ covariate in the model.
 * 8.4 (released on February 26, 2017)
     1. Produced warnings instead of errors when there is no SNP to be conditioned on in conditional analysis.
 
-* 8.5 (current version, released on March 21, 2017)
+* 8.5 (released on March 21, 2017)
 	1. Fixed a bug in the *p*-value calculation in gene-environment interaction analysis.
+
+* 8.6 (current version, released on May 28, 2017)
+	1. Added ALT_AC calculation for dosage data.
 
 # CONTACT
 For questions, please contact [Ran Tao](https://sites.google.com/site/dragontaoran/home).

@@ -2038,8 +2038,8 @@ void SUGEN::SingleVariantAnalysis_GetSNP_ (SVA_UTILS& sva_item)
 	sva_item.n_ = sva_item.n0_count_+sva_item.n1_count_+sva_item.n2_count_+sva_item.n_dose_;
 	if (sva_item.n_ > 0) 
 	{
+		sva_item.mac_ = (int)round(sva_item.maf_);
 		sva_item.maf_ /= 2.*sva_item.n_;
-		sva_item.mac_ = sva_item.n1_count_+2*sva_item.n2_count_;
 	}
 	if (method_ == logistic || method_ == right_censored)
 	{
@@ -2382,7 +2382,8 @@ void SUGEN::LinearWald_ (SVA_UTILS& sva_item)
 	{
 		sva_item.vartheta_ = sva_item.Ahat_;
 	}
-	/**** variance estimation ***********************************************************/	
+	/**** variance estimation ***********************************************************/
+
 } // SUGEN::LinearWald_
 
 void SUGEN::LogisticWald_ (SVA_UTILS& sva_item) 
@@ -4367,8 +4368,8 @@ void SUGEN::ScoreTests_GetSNP_ (SVA_UTILS& sva_item)
 	sva_item.n_ = sva_item.n0_count_+sva_item.n1_count_+sva_item.n2_count_+sva_item.n_dose_;
 	if (sva_item.n_ > 0) 
 	{
+		sva_item.mac_ = (int)round(sva_item.maf_);
 		sva_item.maf_ /= 2.*sva_item.n_;
-		sva_item.mac_ = sva_item.n1_count_+2*sva_item.n2_count_;
 	}
 	if (method_ == logistic || method_ == right_censored)
 	{
