@@ -118,6 +118,9 @@ Specifies the weight column in `pheno_file`. The default column name is *WT*. Th
 * `--vcf vcf_file.gz`  
 Specifies the [block compressed and indexed](http://www.htslib.org/doc/tabix.html) VCF file. The default name is *geno.vcf.gz*.
 
+* `--genetic-text genetic_text_file`
+Specifies the genetic data file in plain-text format. 
+
 * `--dosage`  
 Analyzes dosage data in the VCF file. The dosages must be stored in the *DS* field of the VCF file. This requirement is the same as [RAREMETALWORKER](http://genome.sph.umich.edu/wiki/RAREMETALWORKER).
 
@@ -196,6 +199,14 @@ The VCF file contains the genotype data. The format specifications of a VCF file
 bgzip vcf_file
 tabix -p vcf -f vcf_file.gz  
 ```
+
+## Genetic Data File in Plain-Text Format
+This file should be tab-delimited. Missing data are denoted by *NA*. The rows represent genetic features, such as SNPs or genes. The columns represent study subjects. The 1st row contains the subject IDs. The 1st column contains the genetic feature IDs. An example is as follows:
+
+|id	  | subject_1 | subject_2	| subject_3 |
+|gene1|	0.07      |	0.25        | 0.37      |
+|gene2|	NA        |	0.67        | 0.15      |
+
 
 ## Pairwise Inclusion Probability Matrix
 The files that contain the pairwise inclusion probability matrices should be tab-delimited. The 1st row is the header line containing the subject IDs. The remaining rows constitute a symmetric square matrix. That is to say, the number of rows equals the number of columns plus 1 (for the header line). The marginal inclusion probability of the ith subject is in the (i+1)th row and ith column. The pairwise inclusion probability of the ith and jth subjects is in the (i+1)th row and jth column, as well as in the (j+1)th row and ith column. All inclusion probabilities are strictly greater than 0 and less than or equal to 1. Missing values are not allowed. Note that there can be multiple pairwise inclusion probability matrices. Subjects in different pairwise inclusion probability matrices are assumed to be independent. Note that these pairwise inclusion probability matrices are optional in the weighted approach and not needed in the unweighted approach.
@@ -412,8 +423,11 @@ covariate in the model.
 * 8.5 (released on March 21, 2017)
 	1. Fixed a bug in the *p*-value calculation in gene-environment interaction analysis.
 
-* 8.6 (current version, released on May 28, 2017)
+* 8.6 (released on May 28, 2017)
 	1. Added ALT_AC calculation for dosage data.
+
+* 8.7 (current version, released on July 19, 2017)
+	1. Added the capability to handle plain-text genetic data files.
 
 # CONTACT
 For questions, please contact [Ran Tao](https://sites.google.com/site/dragontaoran/home).

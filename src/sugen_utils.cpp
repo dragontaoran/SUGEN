@@ -178,6 +178,7 @@ SUGEN::SUGEN ()
 	flag_left_truncation_ = false;
 	flag_pairwise_inclusion_prob_ = false;
 	flag_ge_full_output_ = false;
+	flag_geno_text_ = false;
 	FN_COND_SNPS_ = "NULL";
 	formula_ = "NULL";
 	id_col_ = "IID";
@@ -214,6 +215,7 @@ void SUGEN::CommandLineArgs_ (const int argc, char *argv[])
 	bool flag_group_maf = false;
 	bool flag_group_callrate = false;
 	bool flag_score_rescale = false;
+	bool flag_vcf = false;
 	time_t now = time(NULL);
 	
 	/**** command line input ************************************************************/
@@ -234,7 +236,18 @@ void SUGEN::CommandLineArgs_ (const int argc, char *argv[])
 			{
 				stdError("Error: Expected argument after '--vcf'!");
 			}
-			FN_geno_ = StripQuotes(string(argv[++i])); 
+			FN_geno_ = StripQuotes(string(argv[++i]));
+			flag_vcf = true;
+			continue;
+		}
+		if (strcmp(argv[i], "--genetic-text") == 0) 
+		{
+			if (i == argc - 1) 
+			{
+				stdError("Error: Expected argument after '--geno-text'!");
+			}
+			FN_geno_ = StripQuotes(string(argv[++i]));
+			flag_geno_text_ = true;
 			continue;
 		}
 		if (strcmp(argv[i], "--probmatrix") == 0) 
@@ -494,6 +507,15 @@ void SUGEN::CommandLineArgs_ (const int argc, char *argv[])
 		stdError("Error: Unknown command line option "+string(argv[i])+"!");
 	}
 	
+	if (flag_geno_text_)
+	{
+		if (flag_vcf || flag_dosage_ || flag_condition || test_type_ == SCORE || flag_score_rescale || flag_extract_chr || flag_extract_range || flag_extract_file || flag_group_ || flag_group_maf || flag_group_callrate)
+		{
+			stdError("Error: Cannot specify the following options together with '--geno-text': '--vcf', '--dosage', '--cond', '--score', '--score-rescale', \
+				'--extract-chr', '--extract-range', '--extract-file', '--group', '--group-maf', '--group-callrate'.");
+		}
+	}
+	
 	if (test_type_ == WALD) 
 	{
 		if (flag_GE && flag_condition) 
@@ -583,7 +605,7 @@ void SUGEN::CommandLineArgs_ (const int argc, char *argv[])
 	{
 		stdError("Can not open log file " + FN_log_ + " !");
 	}		
-	FO_log_ << "SUGEN v8.5 (03/21/2017) starts at " << asctime(localtime(&now)) << endl;
+	FO_log_ << "SUGEN v8.7 (07/19/2017) starts at " << asctime(localtime(&now)) << endl;
 	FO_log_ << "Author: Ran Tao" << endl;
 	FO_log_ << "Email: r.tao@vanderbilt.edu" << endl;
 	FO_log_ << "Documentation & citation: https://github.com/dragontaoran/SUGEN" << endl << endl;
@@ -598,10 +620,17 @@ void SUGEN::CommandLineArgs_ (const int argc, char *argv[])
 	}
 	FO_log_ << endl;
 	
-	FO_log_ << "The VCF file is " << FN_geno_ << "." << endl;
-	if (flag_dosage_)
+	if (flag_geno_text_)
 	{
-		FO_log_ << "Analyze dosage data in the VCF file." << endl;
+		FO_log_ << "The genotype file in plain-text format is " << FN_geno_ << "." << endl;
+	}
+	else
+	{
+		FO_log_ << "The VCF file is " << FN_geno_ << "." << endl;
+		if (flag_dosage_)
+		{
+			FO_log_ << "Analyze dosage data in the VCF file." << endl;
+		}
 	}
 	FO_log_ << endl;
 	
@@ -1048,6 +1077,33 @@ void SUGEN::InputData_CheckGeno_ (INPUT_UTILS& input_item)
 	
 	FO_log_ << "Done!" << endl << endl;
 } // SUGEN::InputData_CheckGeno_
+
+void SUGEN::InputData_CheckGeno_text_ (INPUT_UTILS& input_item) 
+{
+	string tmp;
+	
+	FO_log_ << "Processing the genotype file in plain-text format..." << endl;
+	
+	/**** check dimension ***************************************************************/	
+	dim(N_geno_text_features_, N_Sample_geno_, FN_geno_, true, FO_log_);
+	N_Sample_geno_ --;
+	FO_log_ << "The genotype file in plain-text format contains " << N_Sample_geno_ << " individual(s) and " << N_geno_text_features_ << " genetic feature(s)." << endl;
+	/**** check dimension ***************************************************************/
+	
+	/**** read subject ID ***************************************************************/
+	input_item.rawGeno_ID_.resize(N_Sample_geno_);
+	
+	FI_geno_text_.open(FN_geno_);
+	FI_geno_text_ >> tmp;	
+	for(int i=0; i<N_Sample_geno_; i++) 
+	{
+	  FI_geno_text_ >> input_item.rawGeno_ID_[i];
+	}
+	FI_geno_text_.close();
+	/**** read subject ID ***************************************************************/
+		
+	FO_log_ << "Done!" << endl << endl;
+} // SUGEN::InputData_CheckGeno_text_
 
 void SUGEN::InputData_LoadProb_ (INPUT_UTILS& input_item) 
 {
@@ -1556,7 +1612,14 @@ void SUGEN::InputData_ ()
 	INPUT_UTILS input_item;
 
 	InputData_LoadPheno_(input_item);
-	InputData_CheckGeno_(input_item);
+	if (flag_geno_text_)
+	{
+		InputData_CheckGeno_text_(input_item);
+	}
+	else
+	{
+		InputData_CheckGeno_(input_item);
+	}
 	InputData_LoadProb_(input_item);
 	InputData_IDLinker_(input_item);
 	InputData_PrepareAnalysis_(input_item);
@@ -1661,32 +1724,51 @@ void SUGEN::SingleVariantAnalysis_Initialization_ (SVA_UTILS& sva_item)
 			sva_item.e_Wttheta_[nstudy].resize(N1);
 			sva_item.riskset_[nstudy].resize(N1);
 		}
-	}	
+	}
+
+	if (flag_geno_text_)
+	{
+		sva_item.raw_feature_.resize(N_Sample_geno_);
+	}
 } // SUGEN::SingleVariantAnalysis_Initialization_
 
 void SUGEN::SingleVariantAnalysis_OutputSNPCountHeader_ (SVA_UTILS& sva_item, const SVA_OUTPUT_TYPE_ sva_output_type) 
-{	
-	if (sva_output_type == sva_header) 
+{
+	if (flag_geno_text_)
 	{
-		*sva_item.FO_out_ << "CHROM\tPOS\tVCF_ID\tREF\tALT\tALT_AF\tALT_AC\tN_INFORMATIVE\tN_REF\tN_HET\tN_ALT\tN_DOSE";
-		if (method_ == logistic)
+		if (sva_output_type == sva_header) 
 		{
-			*sva_item.FO_out_ << "\tALT_AF_CASE\tN_CASE";
-		}
-		else if (method_ == right_censored)
+			*sva_item.FO_out_ << "FEATURE_ID";
+		} 
+		else 
 		{
-			*sva_item.FO_out_ << "\tALT_AF_EVENT\tN_EVENT";
+			*sva_item.FO_out_ << sva_item.feature_id_;
 		}
-	} 
-	else 
+	}
+	else
 	{
-		*sva_item.FO_out_ << VCF_record_.getChromStr() << '\t' << VCF_record_.get1BasedPosition() << '\t' << VCF_record_.getIDStr() << '\t'
-			<< VCF_record_.getRefStr() << '\t' << VCF_record_.getAltStr();
-		*sva_item.FO_out_ << '\t' << sva_item.maf_<< '\t' << sva_item.mac_ << '\t' << sva_item.n_ << '\t' << sva_item.n0_count_ 
-			<< '\t'  << sva_item.n1_count_ << '\t' << sva_item.n2_count_ << '\t' << sva_item.n_dose_;
-		if (method_ == logistic || method_ == right_censored)
+		if (sva_output_type == sva_header) 
 		{
-			*sva_item.FO_out_ << "\t" << sva_item.maf_case_ << "\t" << sva_item.n_case_;
+			*sva_item.FO_out_ << "CHROM\tPOS\tVCF_ID\tREF\tALT\tALT_AF\tALT_AC\tN_INFORMATIVE\tN_REF\tN_HET\tN_ALT\tN_DOSE";
+			if (method_ == logistic)
+			{
+				*sva_item.FO_out_ << "\tALT_AF_CASE\tN_CASE";
+			}
+			else if (method_ == right_censored)
+			{
+				*sva_item.FO_out_ << "\tALT_AF_EVENT\tN_EVENT";
+			}
+		} 
+		else 
+		{
+			*sva_item.FO_out_ << VCF_record_.getChromStr() << '\t' << VCF_record_.get1BasedPosition() << '\t' << VCF_record_.getIDStr() << '\t'
+				<< VCF_record_.getRefStr() << '\t' << VCF_record_.getAltStr();
+			*sva_item.FO_out_ << '\t' << sva_item.maf_<< '\t' << sva_item.mac_ << '\t' << sva_item.n_ << '\t' << sva_item.n0_count_ 
+				<< '\t'  << sva_item.n1_count_ << '\t' << sva_item.n2_count_ << '\t' << sva_item.n_dose_;
+			if (method_ == logistic || method_ == right_censored)
+			{
+				*sva_item.FO_out_ << "\t" << sva_item.maf_case_ << "\t" << sva_item.n_case_;
+			}
 		}
 	}		
 } // SUGEN::SingleVariantAnalysis_OutputSNPCountHeader_
@@ -2049,6 +2131,52 @@ void SUGEN::SingleVariantAnalysis_GetSNP_ (SVA_UTILS& sva_item)
 		}
 	}
 } // SUGEN::SingleVariantAnalysis_GetSNP_
+
+void SUGEN::SingleVariantAnalysis_GetSNP_geno_text_ (SVA_UTILS& sva_item) 
+{
+	string tmp;
+	
+	FI_geno_text_ >> sva_item.feature_id_;
+	for(int i=0; i<N_Sample_geno_; i++) 
+	{
+		FI_geno_text_ >> tmp;
+		if (tmp == "NA")
+		{
+			sva_item.raw_feature_[i] == MISSIND;
+		}
+		else
+		{
+			sva_item.raw_feature_[i] = stod(tmp);
+		}
+	}
+		
+	for (int nstudy=0; nstudy<N_study_; nstudy++) 
+	{
+		for (int i=0; i<F_[nstudy].size(); i++) 
+		{
+			W_[nstudy](i,0) = sva_item.raw_feature_(geno_pheno_linker_[nstudy](i));
+			if (W_[nstudy](i,0) == MISSIND)
+			{
+				sva_item.Miss_[nstudy](i) = 0.;
+				if (snp_analysis_mode_ == GE) 
+				{
+					W_[nstudy].block(i,nhead_,1,nadd_).setConstant(MISSIND);
+				}
+			}
+			else 
+			{
+				sva_item.Miss_[nstudy](i) = 1.;
+				if (snp_analysis_mode_ == GE) 
+				{
+					for (int j=0; j<nadd_; j++) 
+					{
+						W_[nstudy](i,nhead_+j) = W_[nstudy](i,0)*W_[nstudy](i,nhead_+nadd_+ENVI_col_(j));
+					}
+				}
+			}
+		}
+	}
+} // SUGEN::SingleVariantAnalysis_GetSNP_geno_text_
 
 void SUGEN::LinearWald_ (SVA_UTILS& sva_item) 
 {	
@@ -3046,7 +3174,7 @@ void SUGEN::CoxphWald_ (SVA_UTILS& sva_item)
 void SUGEN::SingleVariantAnalysis_PerSNPAnalysis_ (SVA_UTILS& sva_item) 
 {
 	SingleVariantAnalysis_GetSNP_(sva_item);
-	
+
 	if (sva_item.flag_multiallelic_) 
 	{
 		FO_log_ << VCF_record_.getChromStr() << ":" << VCF_record_.get1BasedPosition() << ": multiallelic SNP!" << endl;
@@ -3106,6 +3234,61 @@ void SUGEN::SingleVariantAnalysis_PerSNPAnalysis_ (SVA_UTILS& sva_item)
 	}	
 } // SUGEN::SingleVariantAnalysis_PerSNPAnalysis_
 
+void SUGEN::SingleVariantAnalysis_PerSNPAnalysis_geno_text_ (SVA_UTILS& sva_item) 
+{
+	SingleVariantAnalysis_GetSNP_geno_text_(sva_item);
+
+	if (method_ == LS) 
+	{
+		LinearWald_(sva_item);
+		if (flag_strata_ && !sva_item.flag_het_converge_) 
+		{
+			FO_log_ << sva_item.feature_id_ << ": In linear regression allowing heterogeneous variance, algorithm does not converge!" << endl;
+			SingleVariantAnalysis_Output_(sva_item, sva_results_miss); 
+		}
+		else if (CheckSingularVar(sva_item.vartheta_))				
+		{
+			FO_log_ << sva_item.feature_id_ << ": Singular Variance Estimation!" << endl;
+			SingleVariantAnalysis_Output_(sva_item, sva_results_miss);
+		}
+		else {
+			SingleVariantAnalysis_Output_(sva_item, sva_no_miss);
+		}
+	} 
+	else if (method_ == logistic) 
+	{
+		LogisticWald_(sva_item);
+		if (!sva_item.flag_logistic_converge_) 
+		{
+			FO_log_ << sva_item.feature_id_ << ": In logistic regression, algorithm does not converge!" << endl;
+			SingleVariantAnalysis_Output_(sva_item, sva_results_miss); 
+		}
+		else if (CheckSingularVar(sva_item.vartheta_)) 
+		{
+			FO_log_ << sva_item.feature_id_ << ": Singular Variance Estimation!" << endl;
+			SingleVariantAnalysis_Output_(sva_item, sva_results_miss);
+		} else {			
+			SingleVariantAnalysis_Output_(sva_item, sva_no_miss);
+		}
+	}
+	else if (method_ == right_censored)
+	{
+		CoxphWald_(sva_item);
+		if (!sva_item.flag_coxph_converge_) 
+		{
+			FO_log_ << sva_item.feature_id_ << ": In Cox proportional hazards regression, algorithm does not converge!" << endl;
+			SingleVariantAnalysis_Output_(sva_item, sva_results_miss); 
+		}
+		else if (CheckSingularVar(sva_item.vartheta_)) 
+		{
+			FO_log_ << sva_item.feature_id_ << ": Singular Variance Estimation!" << endl;
+			SingleVariantAnalysis_Output_(sva_item, sva_results_miss);
+		} else {			
+			SingleVariantAnalysis_Output_(sva_item, sva_no_miss);
+		}			
+	}
+} // SUGEN::SingleVariantAnalysis_PerSNPAnalysis_geno_text_
+
 void SUGEN::SingleVariantAnalysis_ () 
 {	
 	SVA_UTILS sva_item;
@@ -3132,68 +3315,83 @@ void SUGEN::SingleVariantAnalysis_ ()
 	/**** open output file **************************************************************/
 	
 	/**** SNP analysis ******************************************************************/
-	VCF_reader_.open(FN_geno_.c_str(), VCF_header_);
-	VCF_reader_.readVcfIndex();	
 	FO_log_ << "Start variant by variant analysis..." << endl;
-	if (extract_type_ == EXTRACT_TYPE_CHR) 
-	{	
-		VCF_reader_.setReadSection(extract_chr_.c_str());
-		while (VCF_reader_.readRecord(VCF_record_)) 
-		{			
-			SingleVariantAnalysis_PerSNPAnalysis_(sva_item);
-		}		
-	} 
-	else if (extract_type_ == EXTRACT_TYPE_RANGE) 
-	{	
-		VCF_reader_.set1BasedReadSection(extract_chr_.c_str(), extract_start_, extract_end_+1);
-		while (VCF_reader_.readRecord(VCF_record_)) 
-		{
-			SingleVariantAnalysis_PerSNPAnalysis_(sva_item);
-		}	
-	} 
-	else if (extract_type_ == EXTRACT_TYPE_FILE) 
+	
+	if (flag_geno_text_)
 	{
-		unsigned long long NSNP, NSNP_final;
-		int32_t pos;
-		string SNP_name;
-		vector<string> chr_pos;
-		ifstream FI;
-				
-		nrow(NSNP, FN_extract_, false, FO_log_);
-		
-		FI.open(FN_extract_);
-		NSNP_final = 0;
-		for (unsigned long long i=0; i<NSNP; i++) 
-		{			
-			FI >> SNP_name;
-			chr_pos.clear();
-			if (!Split(SNP_name, ":", &chr_pos)) 
-			{
-				stdError("Error: Cannot parse SNP "+SNP_name+" in "+FN_extract_+"!\n");
-			}
-			pos = atoi(chr_pos[1].c_str());
-			VCF_reader_.set1BasedReadSection(chr_pos[0].c_str(), pos, pos+1);
-			if (VCF_reader_.readRecord(VCF_record_)) 
-			{
-				SingleVariantAnalysis_PerSNPAnalysis_(sva_item);
-				NSNP_final ++;
-			}
-		}
-		FI.close();
-		if (NSNP_final == 0) 
+		FI_geno_text_.open(FN_geno_);
+		getline(FI_geno_text_, sva_item.feature_id_);
+		for (int nfeature=0; nfeature<N_geno_text_features_; nfeature++)
 		{
-			FO_log_ << "Warning: No variants in "+FN_extract_+" are present in the VCF file!" << endl;
-			FO_log_ << "Warning: Therefore, no analysis has been performed!" << endl;
-		}			
+			SingleVariantAnalysis_PerSNPAnalysis_geno_text_(sva_item);
+		}
+		FI_geno_text_.close();
 	}
 	else
 	{
-		while (VCF_reader_.readRecord(VCF_record_)) 
-		{			
-			SingleVariantAnalysis_PerSNPAnalysis_(sva_item);
+		VCF_reader_.open(FN_geno_.c_str(), VCF_header_);
+		VCF_reader_.readVcfIndex();	
+		
+		if (extract_type_ == EXTRACT_TYPE_CHR) 
+		{	
+			VCF_reader_.setReadSection(extract_chr_.c_str());
+			while (VCF_reader_.readRecord(VCF_record_)) 
+			{			
+				SingleVariantAnalysis_PerSNPAnalysis_(sva_item);
+			}		
+		} 
+		else if (extract_type_ == EXTRACT_TYPE_RANGE) 
+		{	
+			VCF_reader_.set1BasedReadSection(extract_chr_.c_str(), extract_start_, extract_end_+1);
+			while (VCF_reader_.readRecord(VCF_record_)) 
+			{
+				SingleVariantAnalysis_PerSNPAnalysis_(sva_item);
+			}	
+		} 
+		else if (extract_type_ == EXTRACT_TYPE_FILE) 
+		{
+			unsigned long long NSNP, NSNP_final;
+			int32_t pos;
+			string SNP_name;
+			vector<string> chr_pos;
+			ifstream FI;
+					
+			nrow(NSNP, FN_extract_, false, FO_log_);
+			
+			FI.open(FN_extract_);
+			NSNP_final = 0;
+			for (unsigned long long i=0; i<NSNP; i++) 
+			{			
+				FI >> SNP_name;
+				chr_pos.clear();
+				if (!Split(SNP_name, ":", &chr_pos)) 
+				{
+					stdError("Error: Cannot parse SNP "+SNP_name+" in "+FN_extract_+"!\n");
+				}
+				pos = atoi(chr_pos[1].c_str());
+				VCF_reader_.set1BasedReadSection(chr_pos[0].c_str(), pos, pos+1);
+				if (VCF_reader_.readRecord(VCF_record_)) 
+				{
+					SingleVariantAnalysis_PerSNPAnalysis_(sva_item);
+					NSNP_final ++;
+				}
+			}
+			FI.close();
+			if (NSNP_final == 0) 
+			{
+				FO_log_ << "Warning: No variants in "+FN_extract_+" are present in the VCF file!" << endl;
+				FO_log_ << "Warning: Therefore, no analysis has been performed!" << endl;
+			}			
 		}
+		else
+		{
+			while (VCF_reader_.readRecord(VCF_record_)) 
+			{			
+				SingleVariantAnalysis_PerSNPAnalysis_(sva_item);
+			}
+		}
+		VCF_reader_.close();
 	}
-	VCF_reader_.close();
 	ifclose(sva_item.FO_out_);
 	FO_log_ << "Done!" << endl << endl;
 	/**** SNP analysis ******************************************************************/			
@@ -3689,8 +3887,6 @@ void SUGEN::LogisticScoreNull_ (SVA_UTILS& sva_item)
 		// // RT
 		// time(&timer_end);
 		// cout << "Iteration=" << iter << "; time=" << difftime(timer_end, timer_start) << " seconds; error=" << tol << endl;
-		// cout << "theta=" << sva_item.theta_.transpose() << endl;
-		// cout << endl;
 		// // RT end
 				
 		if (tol < TOL) 
@@ -3971,8 +4167,6 @@ void SUGEN::CoxphScoreNull_ (SVA_UTILS& sva_item)
 		// // RT
 		// time(&timer_end);
 		// cout << "Iteration=" << iter << "; time=" << difftime(timer_end, timer_start) << " seconds; error=" << tol << endl;
-		// cout << "theta=" << sva_item.theta_.transpose() << endl;
-		// cout << endl;
 		// // RT end
 		
 		if (tol < TOL) 
@@ -5225,39 +5419,6 @@ void SUGEN::CoxphScore_ (SVA_UTILS& sva_item)
 	sva_item.Bhat_.bottomRightCorner(p_, p_) = sva_item.Bhat_cov_;
 	sva_item.Bhat_.bottomLeftCorner(p_, sva_item.nSNP_) = sva_item.Bhat_.topRightCorner(sva_item.nSNP_, p_).transpose();
 	
-	// // RT
-	// MatrixXd Ahat_inverse = sva_item.Ahat_.inverse();
-	// cout << sva_item.Ahat_ << endl << endl;
-	// cout << sva_item.Bhat_ << endl << endl;
-	// cout << sva_item.theta_ << endl << endl;
-	// cout << Ahat_inverse*sva_item.Bhat_*Ahat_inverse << endl << endl;
-	// ofstream FO_test;
-	// FO_test.open("test_data_score.tab");
-	// for (int i=0; i<Y_cox_[0].size(); i++)
-	// {
-		// FO_test << F_[0][i] << "\t";
-		// if (!Y_cox_[0][i].is_alive_)
-		// {
-			// FO_test << Y_cox_[0][i].survival_time_;
-		// }
-		// else
-		// {
-			// FO_test << Y_cox_[0][i].censoring_time_;
-		// }
-		// FO_test << "\t" << 1-Y_cox_[0][i].is_alive_;
-		// for (int j=0; j<W_[0].cols(); j++)
-		// {
-			// FO_test << "\t" << W_[0](i,j);
-		// }
-		// for (int j=0; j<sva_item.G_[0].cols(); j++)
-		// {
-			// FO_test << "\t" << sva_item.G_[0](i,j);
-		// }
-		// FO_test << endl;
-	// }
-	// FO_test.close();
-	// // RT end
-
 	CalculateUV_(sva_item);	
 } // SUGEN::CoxphScore_
 

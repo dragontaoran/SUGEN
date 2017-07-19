@@ -154,6 +154,11 @@ struct SVA_UTILS {
 	MatrixXd Bhat_cov_;
 	/**** score test ********************************************************************/
 	
+	/**** genotype file in plain-text format ********************************************/
+	string feature_id_;
+	VectorXd raw_feature_;
+	/**** genotype file in plain-text format ********************************************/
+	
 	/**** functions *********************************************************************/
 	SVA_UTILS ();
 	/**** functions *********************************************************************/
@@ -187,6 +192,7 @@ struct SUGEN {
 	bool flag_left_truncation_;
 	bool flag_pairwise_inclusion_prob_;
 	bool flag_ge_full_output_;
+	bool flag_geno_text_;
 	string formula_; // regression formula in the form Y=X1+X2+X3
 	string id_col_; // ID column name 
 	string family_col_; // family ID column name
@@ -204,6 +210,8 @@ struct SUGEN {
 	double group_maf_;
 	double group_callrate_;
 	RESCALE_TYPE_ rescale_type_;
+	
+	ifstream FI_geno_text_;
 	/**** I/O ***************************************************************************/
 		
 	/**** others variables **************************************************************/
@@ -221,6 +229,7 @@ struct SUGEN {
 	int nadd_;
 	int ncov_;
 	int nhead_;
+	int N_geno_text_features_;
 	
 	vector<string> ENVI_names_; // environmenal covariates
 	VectorXi ENVI_col_;
@@ -258,6 +267,7 @@ struct SUGEN {
 	void InputData_LoadPheno_ (INPUT_UTILS& input_item);
 	double ReadOneVariant_ (const int idx, VcfRecordGenotype& genoInfo);
 	void InputData_CheckGeno_ (INPUT_UTILS& input_item);
+	void InputData_CheckGeno_text_ (INPUT_UTILS& input_item);
 	void InputData_LoadProb_ (INPUT_UTILS& input_item);
 	void InputData_IDLinker_ (INPUT_UTILS& input_item);
 	void InputData_PrepareAnalysis_ (INPUT_UTILS& input_item);
@@ -267,10 +277,12 @@ struct SUGEN {
 	void SingleVariantAnalysis_OutputSNPCountHeader_ (SVA_UTILS& sva_item, const SVA_OUTPUT_TYPE_ sva_output_type);
 	void SingleVariantAnalysis_Output_ (SVA_UTILS& sva_item, const SVA_OUTPUT_TYPE_ sva_output_type);
 	void SingleVariantAnalysis_GetSNP_ (SVA_UTILS& sva_item);
+	void SingleVariantAnalysis_GetSNP_geno_text_ (SVA_UTILS& sva_item);
 	void LinearWald_ (SVA_UTILS& sva_item);
 	void LogisticWald_ (SVA_UTILS& sva_item);
 	void CoxphWald_ (SVA_UTILS& sva_item);	
 	void SingleVariantAnalysis_PerSNPAnalysis_ (SVA_UTILS& sva_item);
+	void SingleVariantAnalysis_PerSNPAnalysis_geno_text_ (SVA_UTILS& sva_item); 
 	void SingleVariantAnalysis_ ();
 
 	void ScoreTests_GlobalInitialization_ (SVA_UTILS& sva_item);
