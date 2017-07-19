@@ -622,7 +622,7 @@ void SUGEN::CommandLineArgs_ (const int argc, char *argv[])
 	
 	if (flag_geno_text_)
 	{
-		FO_log_ << "The genotype file in plain-text format is " << FN_geno_ << "." << endl;
+		FO_log_ << "The genetic data file in plain-text format is " << FN_geno_ << "." << endl;
 	}
 	else
 	{
@@ -1082,12 +1082,12 @@ void SUGEN::InputData_CheckGeno_text_ (INPUT_UTILS& input_item)
 {
 	string tmp;
 	
-	FO_log_ << "Processing the genotype file in plain-text format..." << endl;
+	FO_log_ << "Processing the genetic data file in plain-text format..." << endl;
 	
 	/**** check dimension ***************************************************************/	
 	dim(N_geno_text_features_, N_Sample_geno_, FN_geno_, true, FO_log_);
 	N_Sample_geno_ --;
-	FO_log_ << "The genotype file in plain-text format contains " << N_Sample_geno_ << " individual(s) and " << N_geno_text_features_ << " genetic feature(s)." << endl;
+	FO_log_ << "The genetic data file in plain-text format contains " << N_Sample_geno_ << " individual(s) and " << N_geno_text_features_ << " genetic feature(s)." << endl;
 	/**** check dimension ***************************************************************/
 	
 	/**** read subject ID ***************************************************************/
