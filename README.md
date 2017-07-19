@@ -119,7 +119,7 @@ Specifies the weight column in `pheno_file`. The default column name is *WT*. Th
 Specifies the [block compressed and indexed](http://www.htslib.org/doc/tabix.html) VCF file. The default name is *geno.vcf.gz*.
 
 * `--genetic-text genetic_text_file`
-Specifies the genetic data file in plain-text format. 
+Specifies the genetic data file in plain-text format. This option cannot be specified together with any of the following options: `--vcf`, `--dosage`, `--cond`, `--extract-chr`, `--extract-range`, `--extract-file`, `--group`, `--group-maf`, `--group-callrate`, `--score`, `--score-rescale`.
 
 * `--dosage`  
 Analyzes dosage data in the VCF file. The dosages must be stored in the *DS* field of the VCF file. This requirement is the same as [RAREMETALWORKER](http://genome.sph.umich.edu/wiki/RAREMETALWORKER).
@@ -427,7 +427,7 @@ covariate in the model.
 	1. Added ALT_AC calculation for dosage data.
 
 * 8.7 (current version, released on July 19, 2017)
-	1. Added the capability to handle plain-text genetic data files.
+	1. Added the capability to handle genetic data files in plain-text format.
 
 # CONTACT
 For questions, please contact [Ran Tao](https://sites.google.com/site/dragontaoran/home).

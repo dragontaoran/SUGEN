@@ -511,7 +511,7 @@ void SUGEN::CommandLineArgs_ (const int argc, char *argv[])
 	{
 		if (flag_vcf || flag_dosage_ || flag_condition || test_type_ == SCORE || flag_score_rescale || flag_extract_chr || flag_extract_range || flag_extract_file || flag_group_ || flag_group_maf || flag_group_callrate)
 		{
-			stdError("Error: Cannot specify the following options together with '--geno-text': '--vcf', '--dosage', '--cond', '--score', '--score-rescale', \
+			stdError("Error: Cannot specify the following options together with '--genetic-text': '--vcf', '--dosage', '--cond', '--score', '--score-rescale', \
 				'--extract-chr', '--extract-range', '--extract-file', '--group', '--group-maf', '--group-callrate'.");
 		}
 	}
