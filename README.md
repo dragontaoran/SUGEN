@@ -67,7 +67,7 @@ The latest version of SUGEN can be downloaded from [github](https://github.com/d
 # SYNOPSIS
 ```
 SUGEN [--pheno pheno_file] [--formula formula] [--id-col iid] [--family-col fid] \
-[--weight-col wt] [--vcf vcf_file.gz] [--dosage] [--probmatrix prob_file] \
+[--weight-col wt] [--vcf vcf_file.gz] [--genetic-text genetic_text_file] [--dosage] [--probmatrix prob_file] \
 [--subset subset_expression] [--unweighted] [--model model] [--robust-variance] \
 [--left-truncation left_truncation_time] [--cond cond_file] [--ge envi_covs] [--score] \
 [--score-rescale rescale_rule] [--group group_file] [--hetero-variance strata] [--out-prefix out_prefix] \
@@ -119,7 +119,7 @@ Specifies the weight column in `pheno_file`. The default column name is *WT*. Th
 Specifies the [block compressed and indexed](http://www.htslib.org/doc/tabix.html) VCF file. The default name is *geno.vcf.gz*.
 
 * `--genetic-text genetic_text_file`
-Specifies the genetic data file in plain-text format. This option cannot be specified together with any of the following options: `--vcf`, `--dosage`, `--cond`, `--extract-chr`, `--extract-range`, `--extract-file`, `--group`, `--group-maf`, `--group-callrate`, `--score`, `--score-rescale`.
+Specifies the genetic data file in plain-text format. This option cannot be specified together with any of the following options: `--vcf`, `--dosage`, `--cond`, `--extract-chr`, `--extract-range`, `--extract-file`, `--group`, `--group-maf`, `--group-callrate`, `--score`, `--score-rescale`. 
 
 * `--dosage`  
 Analyzes dosage data in the VCF file. The dosages must be stored in the *DS* field of the VCF file. This requirement is the same as [RAREMETALWORKER](http://genome.sph.umich.edu/wiki/RAREMETALWORKER).
