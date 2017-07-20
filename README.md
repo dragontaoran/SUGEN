@@ -13,6 +13,7 @@
 - [INPUT FILES](#input-files)
   * [Phenotype File](#phenotype-file)
   * [VCF File](#vcf-file)
+  * [Genetic Data File in Plain-Text Format](#genetic-data-file-in-plain-text-format)
   * [Pairwise Inclusion Probability Matrix](#pairwise-inclusion-probability-matrix)
   * [File that Contains the File Names of the Pairwise Inclusion Probability Matrices](#file-that-contains-the-file-names-of-the-pairwise-inclusion-probability-matrices)
   * [File that Contains the Variants for Conditional Analysis](#file-that-contains-the-variants-for-conditional-analysis)
