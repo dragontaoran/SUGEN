@@ -199,6 +199,7 @@ The VCF file contains the genotype data. The format specifications of a VCF file
 bgzip vcf_file
 tabix -p vcf -f vcf_file.gz  
 ```
+We recommend users to store the SNP genotype or dosage data in VCF format, because there are far more analysis and output options available in SUGEN when using VCF files. 
 
 ## Genetic Data File in Plain-Text Format
 This file should be tab-delimited. Missing data are denoted by *NA*. The rows represent genetic features, such as SNPs or genes. The columns represent study subjects. The 1st row contains the subject IDs. The 1st column contains the genetic feature IDs. An example is as follows:
@@ -207,7 +208,6 @@ This file should be tab-delimited. Missing data are denoted by *NA*. The rows re
 |-----|-----------|-------------|-----------|
 |gene1|	0.07      |	0.25        | 0.37      |
 |gene2|	NA        |	0.67        | 0.15      |
-
 
 ## Pairwise Inclusion Probability Matrix
 The files that contain the pairwise inclusion probability matrices should be tab-delimited. The 1st row is the header line containing the subject IDs. The remaining rows constitute a symmetric square matrix. That is to say, the number of rows equals the number of columns plus 1 (for the header line). The marginal inclusion probability of the ith subject is in the (i+1)th row and ith column. The pairwise inclusion probability of the ith and jth subjects is in the (i+1)th row and jth column, as well as in the (j+1)th row and ith column. All inclusion probabilities are strictly greater than 0 and less than or equal to 1. Missing values are not allowed. Note that there can be multiple pairwise inclusion probability matrices. Subjects in different pairwise inclusion probability matrices are assumed to be independent. Note that these pairwise inclusion probability matrices are optional in the weighted approach and not needed in the unweighted approach.
@@ -236,7 +236,7 @@ Each row is a variant ID, which should be in *chromosome:position* format. Note 
 ### Single-Variant Analysis Results
 The rows represent varaints. The first row is the header line. Missing values are denoted by *NA*. Tables 1-3 describe the columns of `prefix.wald.out` in standard association analysis, conditional analysis, and gene-environment interaction analysis, respectively.
 
-#### Table 1: Column Description in Standard Association Analysis
+#### Table 1a: Column Description in Standard Association Analysis
 | Column Name   | Description                                                                               |
 |---------------|-------------------------------------------------------------------------------------------|
 | CHROM         | Chromosome.                                                                               |
