@@ -204,6 +204,7 @@ tabix -p vcf -f vcf_file.gz
 This file should be tab-delimited. Missing data are denoted by *NA*. The rows represent genetic features, such as SNPs or genes. The columns represent study subjects. The 1st row contains the subject IDs. The 1st column contains the genetic feature IDs. An example is as follows:
 
 |id	  | subject_1 | subject_2	| subject_3 |
+|-----|-----------|-------------|-----------|
 |gene1|	0.07      |	0.25        | 0.37      |
 |gene2|	NA        |	0.67        | 0.15      |
 

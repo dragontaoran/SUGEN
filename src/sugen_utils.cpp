@@ -1171,7 +1171,7 @@ void SUGEN::InputData_IDLinker_ (INPUT_UTILS& input_item)
 	
 	/**** link genotype and phenotype IDs ***********************************************/
 	input_item.raw_geno_pheno_linker_.resize(N);
-	input_item.raw_geno_pheno_linker_.setConstant(-1);	
+	input_item.raw_geno_pheno_linker_.setConstant(-1);
 	for (int i=0; i<input_item.rawGeno_ID_.size(); i++) 
 	{
 		if (input_item.rawPheno_ID_.count(input_item.rawGeno_ID_[i])) 
@@ -2148,8 +2148,7 @@ void SUGEN::SingleVariantAnalysis_GetSNP_geno_text_ (SVA_UTILS& sva_item)
 		{
 			sva_item.raw_feature_[i] = stod(tmp);
 		}
-	}
-		
+	}		
 	for (int nstudy=0; nstudy<N_study_; nstudy++) 
 	{
 		for (int i=0; i<F_[nstudy].size(); i++) 
@@ -2847,10 +2846,6 @@ void SUGEN::CoxphWald_ (SVA_UTILS& sva_item)
 		// // RT
 		// time(&timer_end);
 		// cout << "Iteration=" << iter << "; time=" << difftime(timer_end, timer_start) << " seconds; error=" << tol << endl;
-		// cout << "theta=" << sva_item.theta_.transpose() << endl;
-		// cout << "WtW=" << sva_item.WtW_ << endl;
-		// cout << "WtY=" << sva_item.WtY_.transpose() << endl;
-		// cout << endl;
 		// // RT end
 		
 		if (tol < TOL) 
@@ -3127,48 +3122,12 @@ void SUGEN::CoxphWald_ (SVA_UTILS& sva_item)
 		
 		sva_item.Ahat_ = sva_item.WtW_.inverse();
 		sva_item.vartheta_.noalias() = sva_item.Ahat_*sva_item.Bhat_*sva_item.Ahat_;
-		// // RT
-		// cout << sqrt(sva_item.vartheta_(0,0)) << endl << endl;
-		// // RT end
 		if (flag_uw_ && sva_item.vartheta_(0,0) < (sva_item.Ahat_(0,0)-ERROR_MARGIN))
 		{
 			sva_item.vartheta_ = sva_item.Ahat_;
 		}
 		/**** variance estimation *******************************************************/
-		
-		// // RT
-		// cout << fam_ind_[0].size()-1 << endl << endl;
-		// cout << sva_item.WtW_ << endl << endl;
-		// cout << sva_item.Bhat_ << endl << endl;
-		// cout << sva_item.theta_ << endl << endl;
-		// cout << sva_item.vartheta_ << endl << endl;
-		// // RT end
 	}
-	
-	// // RT
-	// ofstream FO_test;
-	// FO_test.open("test_data.tab");
-	// for (int i=0; i<Y_cox_[0].size(); i++)
-	// {
-		// FO_test << F_[0][i] << "\t";
-		// if (!Y_cox_[0][i].is_alive_)
-		// {
-			// FO_test << Y_cox_[0][i].survival_time_;
-		// }
-		// else
-		// {
-			// FO_test << Y_cox_[0][i].censoring_time_;
-		// }
-		// FO_test << "\t" << 1-Y_cox_[0][i].is_alive_;
-		// FO_test << "\t" << Y_cox_[0][i].left_truncation_time_;
-		// for (int j=0; j<W_[0].cols(); j++)
-		// {
-			// FO_test << "\t" << W_[0](i,j);
-		// }
-		// FO_test << endl;
-	// }
-	// FO_test.close();
-	// // RT end
 } // SUGEN::CoxphWald_
 
 void SUGEN::SingleVariantAnalysis_PerSNPAnalysis_ (SVA_UTILS& sva_item) 
