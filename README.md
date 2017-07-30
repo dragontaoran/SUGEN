@@ -428,8 +428,11 @@ covariate in the model.
 * 8.6 (released on May 28, 2017)
 	1. Added ALT_AC calculation for dosage data.
 
-* 8.7 (current version, released on July 19, 2017)
+* 8.7 (released on July 19, 2017)
 	1. Added the capability to handle genetic data files in plain-text format.
+
+* 8.8 (current version, released on July 29, 2017)
+	1. Fixed a bug in weighted analysis when some studies have no subjects eligible for the association analysis.
 
 # CONTACT
 For questions, please contact [Ran Tao](https://sites.google.com/site/dragontaoran/home).

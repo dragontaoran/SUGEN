@@ -1397,7 +1397,7 @@ void SUGEN::InputData_PrepareAnalysis_ (INPUT_UTILS& input_item)
 				strata_tmp.clear();
 				strata_tmp.resize(rawN1);
 			}
-			
+
 			for (int i=0, j = 0; i<length_rawY; i++) 
 			{
 				if (flag_uw_)
@@ -1465,10 +1465,6 @@ void SUGEN::InputData_PrepareAnalysis_ (INPUT_UTILS& input_item)
 							{
 								W_[nstudy1].row(i) = input_item.rawW_.row(i);
 							}
-							else
-							{
-								// error(FO_log_, "Error: In Cox proportional hazards regression, there must be at leasy one covariate!");
-							}
 						}
 					}
 					
@@ -1488,7 +1484,7 @@ void SUGEN::InputData_PrepareAnalysis_ (INPUT_UTILS& input_item)
 					j++;
 				}
 			}
-			
+		
 			idindx = sortIndexes(F_[nstudy1]);
 			sortByIndexes(F_[nstudy1], idindx);
 			if (method_ == LS || method_ == logistic)
@@ -1547,8 +1543,7 @@ void SUGEN::InputData_PrepareAnalysis_ (INPUT_UTILS& input_item)
 						wts(i,j) = input_item.rawSPS_[nstudy](prob_pheno_linker(i),prob_pheno_linker(j));
 					}
 				}
-				wtds_[nstudy1] = wt_[nstudy1]*wt_[nstudy1].transpose();
-				
+				wtds_[nstudy1] = wt_[nstudy1]*wt_[nstudy1].transpose();				
 				wtps.resize(rawN1,rawN1);			
 				for (int i=0; i<rawN1; i++) 
 				{
@@ -1556,8 +1551,7 @@ void SUGEN::InputData_PrepareAnalysis_ (INPUT_UTILS& input_item)
 					{
 						wtps(i,j) = (wts(i,j)-wts(i,i)*wts(j,j))*wtds_[nstudy1](i,j)/wts(i,j);
 					}
-				}
-							
+				}								
 				for (int i=0; i<nfam-1; i++) 
 				{
 					for (int j=i+1; j<nfam; j++) 
@@ -1565,14 +1559,13 @@ void SUGEN::InputData_PrepareAnalysis_ (INPUT_UTILS& input_item)
 						wtds_[nstudy1].block(fam_ind_[nstudy1](i)+1,fam_ind_[nstudy1](j)+1,fam_ind_[nstudy1](i+1)-fam_ind_[nstudy1](i),fam_ind_[nstudy1](j+1)-fam_ind_[nstudy1](j)) =
 							wtps.block(fam_ind_[nstudy1](i)+1,fam_ind_[nstudy1](j)+1,fam_ind_[nstudy1](i+1)-fam_ind_[nstudy1](i),fam_ind_[nstudy1](j+1)-fam_ind_[nstudy1](j));
 						wtds_[nstudy1].block(fam_ind_[nstudy1](j)+1,fam_ind_[nstudy1](i)+1,fam_ind_[nstudy1](j+1)-fam_ind_[nstudy1](j),fam_ind_[nstudy1](i+1)-fam_ind_[nstudy1](i)) =
-							wtps.block(fam_ind_[nstudy1](j)+1,fam_ind_[nstudy1](i)+1,fam_ind_[nstudy1](j+1)-fam_ind_[nstudy](j),fam_ind_[nstudy1](i+1)-fam_ind_[nstudy1](i));
+							wtps.block(fam_ind_[nstudy1](j)+1,fam_ind_[nstudy1](i)+1,fam_ind_[nstudy1](j+1)-fam_ind_[nstudy1](j),fam_ind_[nstudy1](i+1)-fam_ind_[nstudy1](i));
 					}
-				}			
+				}				
 				wts.resize(0,0);
 				wtps.resize(0,0);
 				prob_pheno_linker.resize(0);
-			}
-			
+			}			
 			if (flag_strata_)
 			{
 				strata_map.clear();
@@ -1596,7 +1589,7 @@ void SUGEN::InputData_PrepareAnalysis_ (INPUT_UTILS& input_item)
 					}
 				}
 			}
-			nstudy1++;	
+			nstudy1++;		
 		} 
 		else 
 		{
