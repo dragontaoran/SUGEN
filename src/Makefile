@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -c -O4 -std=c++11 -I../eigen-eigen-07105f7124f9 -I../libStatGen/include -I../CodeBase
+CFLAGS = -c -O4 -std=c++11 -I../eigen -I../libStatGen/include -I../codeBase
 OBJ_DIR = obj
 
 all: ./$(OBJ_DIR)/main.o ./$(OBJ_DIR)/sugen_utils.o

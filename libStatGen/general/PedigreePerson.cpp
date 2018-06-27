@@ -32,7 +32,7 @@ Person::Person()
 
     markers = new Alleles [markerCount];
     traits = new double [traitCount];
-    covariates = new double [covariateCount + 100];
+    covariates = new double [covariateCount];
     affections = new char [affectionCount];
     strings = new String [stringCount];
 

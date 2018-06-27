@@ -431,8 +431,11 @@ covariate in the model.
 * 8.7 (released on July 19, 2017)
 	1. Added the capability to handle genetic data files in plain-text format.
 
-* 8.8 (current version, released on July 29, 2017)
+* 8.8 (released on July 29, 2017)
 	1. Fixed a bug in weighted analysis when some studies have no subjects eligible for the association analysis.
+	
+* 8.9 (current version, released on July 27, 2018)
+	1. Updated libStatGen to v1.0.14 and Eigen to v3.3.4.
 
 # CONTACT
 For questions, please contact [Ran Tao](https://sites.google.com/site/dragontaoran/home).

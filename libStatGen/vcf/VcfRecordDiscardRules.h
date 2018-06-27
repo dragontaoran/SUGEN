@@ -19,9 +19,14 @@
 #define __VCF_RECORD_DISCARD_RULES_H__
 
 #include <vector>
-#include <set>
-#include <string>
+
+#ifdef __GXX_EXPERIMENTAL_CXX0X__
 #include <unordered_set>
+#else
+#include <set>
+#endif
+
+#include <string>
 #include "VcfHeader.h"
 
 typedef std::string vcfIDtype;

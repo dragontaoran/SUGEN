@@ -605,7 +605,7 @@ void SUGEN::CommandLineArgs_ (const int argc, char *argv[])
 	{
 		stdError("Can not open log file " + FN_log_ + " !");
 	}		
-	FO_log_ << "SUGEN v8.7 (07/19/2017) starts at " << asctime(localtime(&now)) << endl;
+	FO_log_ << "SUGEN v8.9 (06/27/2018) starts at " << asctime(localtime(&now)) << endl;
 	FO_log_ << "Author: Ran Tao" << endl;
 	FO_log_ << "Email: r.tao@vanderbilt.edu" << endl;
 	FO_log_ << "Documentation & citation: https://github.com/dragontaoran/SUGEN" << endl << endl;
@@ -4565,6 +4565,8 @@ void SUGEN::CalculateUV_ (SVA_UTILS& sva_item)
 	sva_item.V_ -= Bbr_invArr_Arb.transpose();
 	sva_item.V_.noalias() += invArr_Arb.transpose()*sva_item.Bhat_.bottomRightCorner(p_, p_)*invArr_Arb;
 	
+	// RTT test //
+	
 	sva_item.V_A_ = sva_item.Ahat_.topLeftCorner(sva_item.nSNP_, sva_item.nSNP_);
 	sva_item.V_A_ -= sva_item.Ahat_.topRightCorner(sva_item.nSNP_, p_)*invArr_Arb;
 		
@@ -4606,6 +4608,14 @@ void SUGEN::CalculateUV_ (SVA_UTILS& sva_item)
 	{
 		error(FO_log_, "Error: In SUGEN::CalculateUV_, sva_item.A_snplist_.size()+sva_item.B_snplist_.size() != sva_item.nSNP_!");
 	}
+	
+	// for (int i=0; i<sva_item.nSNP_; i++) 
+	// {
+		// sva_item.beta_(i) = sva_item.U_(i)/sva_item.V_(i,i);
+		// sva_item.se_(i) = sqrt(1./sva_item.V_(i,i));
+	// }
+	
+	// RTT test end //
 	
 	double scale;
 	if (rescale_type_ == NAIVE) 

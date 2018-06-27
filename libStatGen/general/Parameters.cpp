@@ -326,9 +326,22 @@ LongParameters::LongParameters(const char * desc, LongParameterList * lst)
 
     while (ptr->description != NULL)
     {
-        if (ptr->value != NULL)
+        if(ptr->type == LP_PHONEHOME_VERSION)
+        {
+            // Phone home is turned on, so add
+            // the parameter for the user to turn it off.
+            myNoPhoneHome = false;
+            myVersion = ptr->description;
+            ptr->description = "noPhoneHome";
+            ptr->value = &myNoPhoneHome;
+            ptr->type = LP_BOOL_PARAMETER;
             legacyIndex.Add(ptr->description, ptr);
-
+        }
+        else
+        {
+            if (ptr->value != NULL)
+                legacyIndex.Add(ptr->description, ptr);
+        }
         ptr++;
     }
 
@@ -540,7 +553,7 @@ void LongParameters::Status()
     int  line_len = 0;
 
     bool legacy_parameters = false;
-    bool legacy_count = 0;
+    int legacy_count = 0;
 
     for (LongParameterList * ptr = list + 1; ptr->description != NULL; ptr++)
         if (ptr->type == LP_LEGACY_PARAMETERS)

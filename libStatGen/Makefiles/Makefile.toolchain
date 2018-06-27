@@ -49,7 +49,7 @@ ifeq ($(UNAME:MINGW32%=MINGW32),MINGW32)
         UNAME_LIBS=-lwsock32
 endif
 
-CPP0X=-std=c++11
+# CPP0X=-std=c++0x
 
 CXX     = $(TOOLCHAIN_DIR)$(TOOLCHAIN_PREFIX)g++ $(CPP0X)
 CC      = $(TOOLCHAIN_DIR)$(TOOLCHAIN_PREFIX)gcc
