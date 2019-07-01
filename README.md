@@ -434,8 +434,11 @@ covariate in the model.
 * 8.8 (released on July 29, 2017)
 	1. Fixed a bug in weighted analysis when some studies have no subjects eligible for the association analysis.
 	
-* 8.9 (current version, released on July 27, 2018)
+* 8.9 (released on July 27, 2018)
 	1. Updated libStatGen to v1.0.14 and Eigen to v3.3.4.
+
+* 8.10 (current version, released on June 30, 2019)
+	1. Fixed a bug in the data preperation function for score tests in proportional hazards regression.
 
 # CONTACT
 For questions, please contact [Ran Tao](https://sites.google.com/site/dragontaoran/home).
