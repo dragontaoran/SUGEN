@@ -124,40 +124,42 @@ bool IsNumeric(const string& input) {
 }
 
 bool IsScientificNotation(const string& input, double* value) {
-  if (!IsNumeric(input)) return false;
+	if (!IsNumeric(input)) return false;
 
-  // First check for "e", e.g. "1.43e-10".
-  size_t e_pos = input.find("e");
-  if (e_pos != string::npos) {
-    if (e_pos == 0 || e_pos == input.length() - 1) {
-      return false;
-    }
-    const string first_half = input.substr(0, e_pos);
-    if (IsNumeric(first_half) && IsScientificNotation(input.substr(e_pos))) {
-      if (value != nullptr) {
-        Stod(input, value);
-      }
-      return true;
-    }
-    return false;
-  }
+	// First check for "e", e.g. "1.43e-10".
+	size_t e_pos = input.find("e");
+	if (e_pos != string::npos) {
+		if (e_pos == 0 || e_pos == input.length() - 1) {
+			return false;
+		}
+		const string first_half = input.substr(0, e_pos);
+		if (IsNumeric(first_half) && IsScientificNotation(input.substr(e_pos))) {
+			if (value != nullptr) {
+				Stod(input, value);
+			}
+			return true;
+		}
+		return false;
+	}
 
-  // Also check for "E", e.g. "1.43E10"
-  size_t E_pos = input.find("E");
-  if (E_pos != string::npos) {
-    if (E_pos == 0 || E_pos == input.length() - 1) {
-      return false;
-    }
-    const string first_half = input.substr(0, E_pos);
-    const string second_half = input.substr(E_pos + 1);
-    if (IsNumeric(first_half) && IsScientificNotation(input.substr(E_pos))) {
-      if (value != nullptr) {
-        Stod(input, value);
-      }
-      return true;
-    }
-    return false;
-  }
+	// Also check for "E", e.g. "1.43E10"
+	size_t E_pos = input.find("E");
+	if (E_pos != string::npos) {
+		if (E_pos == 0 || E_pos == input.length() - 1) {
+			return false;
+		}
+		const string first_half = input.substr(0, E_pos);
+		const string second_half = input.substr(E_pos + 1);
+		if (IsNumeric(first_half) && IsScientificNotation(input.substr(E_pos))) {
+			if (value != nullptr) {
+				Stod(input, value);
+			}
+			return true;
+		}
+		return false;
+	}
+  
+	return false;
 }
 
 bool IsScientificNotationWithSign(const string& input, double* value) {

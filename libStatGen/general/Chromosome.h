@@ -23,7 +23,7 @@ public:
         return gs->getChromosomeName(this->chromosomeIndex);
     }
 private:
-    GenomeSequence* gs;
+    GenomeSequence* gs = nullptr;
     int chromosomeIndex;
     genomeIndex_t offset;           // chromosome index 0 corresponds (*gs)[offset]
     genomeIndex_t chromosomeSize;   // return the length of the chromosome
