@@ -1,2 +1,4 @@
 src/obj/*.o
+codeBase/obj/*.o
+SUGEN
 
