@@ -1,3 +1,6 @@
+// Date: 11/12/2019
+// Author: r.tao@vanderbilt.edu (Ran Tao)
+
 #include "sugen_utils.h"
 #include <iostream>
 #include <sstream>
@@ -24,14 +27,14 @@ using namespace string_utils;
 #define NEWTON_RAPHSON_MAXIMUM_STEP 500 // by SUGEN::CoxphWald_, CoxphScoreNull_
 #define STOP_MAXIMUM 5 // by SUGEN::CoxphWald_, CoxphScoreNull_
 
-void stdError (const string reason) 
+void stdError(const string reason) 
 {	
 	cout << reason << endl;
 	cout << "Program was stopped due to error(s) listed above." << endl;
 	exit(1);
 } // stdError
 
-void error (ofstream& FO_log, const string reason) 
+void error(ofstream& FO_log, const string reason) 
 {	
 	FO_log << reason << endl;
 	FO_log << "Program was stopped due to error(s) listed above." << endl;
@@ -791,11 +794,11 @@ void SUGEN::CommandLineArgs_ (const int argc, char *argv[])
 	FO_log_.close();
 } // SUGEN::CommandLineArgs_
 
-void SUGEN::InputData_LoadPheno_ (INPUT_UTILS& input_item) 
+void SUGEN::InputData_LoadPheno_(INPUT_UTILS& input_item) 
 {	
 	FO_log_ << "Loading phenotype data..." << endl;
 			
-	/**** link the ModelAndDataParams obeject params ************************************/
+	// link the ModelAndDataParams obeject params
 	ModelAndDataParams params;
 	if (method_ == LS || method_ == logistic)
 	{
@@ -815,7 +818,7 @@ void SUGEN::InputData_LoadPheno_ (INPUT_UTILS& input_item)
 	params.id_str_ = id_col_;
 	if (flag_strata_)
 	{
-		params.family_str_ = family_col_+","+strata_;
+		params.family_str_ = family_col_ + "," + strata_;
 	}
 	else
 	{
@@ -834,7 +837,6 @@ void SUGEN::InputData_LoadPheno_ (INPUT_UTILS& input_item)
 	{
 		error(FO_log_, params.error_msg_);
 	}
-	/**** link the ModelAndDataParams obeject params ************************************/
 		
 	/**** read data *********************************************************************/
 	int N = params.ids_.size();
@@ -3241,13 +3243,13 @@ void SUGEN::SingleVariantAnalysis_PerSNPAnalysis_geno_text_ (SVA_UTILS& sva_item
 	}
 } // SUGEN::SingleVariantAnalysis_PerSNPAnalysis_geno_text_
 
-void SUGEN::SingleVariantAnalysis_ () 
+void SUGEN::SingleVariantAnalysis_() 
 {	
 	SVA_UTILS sva_item;
 	
 	SingleVariantAnalysis_Initialization_(sva_item);
 	
-	/**** open output file **************************************************************/
+	// Open output file.
 	if (flag_out_zip_) 
 	{
 		sva_item.FO_out_ = ifopen(FN_out_.c_str(), "w", InputFile::GZIP);
@@ -3258,22 +3260,21 @@ void SUGEN::SingleVariantAnalysis_ ()
 	}
 	if (!(*sva_item.FO_out_).isOpen()) 
 	{
-		error(FO_log_, "Error: Cannot open file "+FN_out_+"!");
+		error(FO_log_, "Error: Cannot open file " + FN_out_ + "!");
 	} 
 	else 
 	{
 		SingleVariantAnalysis_Output_(sva_item, sva_header); 
 	}		
-	/**** open output file **************************************************************/
 	
-	/**** SNP analysis ******************************************************************/
+	// SNP analysis
 	FO_log_ << "Start variant by variant analysis..." << endl;
 	
 	if (flag_geno_text_)
 	{
 		FI_geno_text_.open(FN_geno_);
 		getline(FI_geno_text_, sva_item.feature_id_);
-		for (int nfeature=0; nfeature<N_geno_text_features_; nfeature++)
+		for (int nfeature = 0; nfeature < N_geno_text_features_; nfeature++)
 		{
 			SingleVariantAnalysis_PerSNPAnalysis_geno_text_(sva_item);
 		}
@@ -3345,8 +3346,7 @@ void SUGEN::SingleVariantAnalysis_ ()
 		VCF_reader_.close();
 	}
 	ifclose(sva_item.FO_out_);
-	FO_log_ << "Done!" << endl << endl;
-	/**** SNP analysis ******************************************************************/			
+	FO_log_ << "Done!" << endl << endl;			
 } // SUGEN::SingleVariantAnalysis_
 
 void SUGEN::ScoreTests_GlobalInitialization_ (SVA_UTILS& sva_item) 
@@ -6035,9 +6035,8 @@ void SUGEN::ScoreTests_SNPAnalysis_ (SVA_UTILS& sva_item)
 	VCF_reader_.close();
 } // SUGEN::ScoreTests_SNPAnalysis_
 
-void SUGEN::ScoreTests_ () 
+void SUGEN::ScoreTests_() 
 {
-	
 	SVA_UTILS sva_item;
 	ScoreTests_GlobalInitialization_(sva_item);
 	FO_log_ << "Start estimating the parameters under the null..." << endl;

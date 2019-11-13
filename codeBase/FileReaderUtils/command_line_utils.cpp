@@ -1,5 +1,6 @@
 // Date: Nov 2015
 // Author: paulbunn@email.unc.edu (Paul Bunn)
+// Maintainer: r.tao@vanderbilt.edu (Ran Tao)
 
 #include "command_line_utils.h"
 
@@ -41,14 +42,17 @@ string GetCommand(const int argc, char* argv[]) {
 }
 
 bool GetNominalColumnsFromTitles(
-    const vector<string>& header, set<int>* nominal_columns) {
-  if (nominal_columns == nullptr) return false;
-  for (int i = 0; i < header.size(); ++i) {
-    if (HasSuffixString(header[i], "$")) {
-      nominal_columns->insert(i);
-    }
-  }
-  return true;
+	const vector<string>& header, set<int>* nominal_columns)
+{
+	if (nominal_columns == nullptr) return false;
+	for (int i = 0; i < header.size(); ++i)
+	{
+		if (HasSuffixString(header[i], "$"))
+		{
+			nominal_columns->insert(i);
+		}
+	}
+	return true;
 }
 
 bool ParseNaStrings(const string& input, set<string>* na_strings) {

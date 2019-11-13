@@ -27,13 +27,13 @@ namespace file_reader_utils {
 
 // Specifies the kind of model.
 enum ModelType {
-  MODEL_TYPE_UNKNOWN,
-  MODEL_TYPE_LINEAR,
-  MODEL_TYPE_LOGISTIC,
-  MODEL_TYPE_RIGHT_CENSORED_SURVIVAL,  // Cox
-  MODEL_TYPE_INTERVAL_CENSORED,        // Cox
-  MODEL_TYPE_TIME_DEPENDENT_INTERVAL_CENSORED,        // Cox
-  MODEL_TYPE_TIME_INDEPENDENT_INTERVAL_CENSORED,        // Cox
+	MODEL_TYPE_UNKNOWN,
+	MODEL_TYPE_LINEAR,
+	MODEL_TYPE_LOGISTIC,
+	MODEL_TYPE_RIGHT_CENSORED_SURVIVAL,					// Cox
+	MODEL_TYPE_INTERVAL_CENSORED,						// Cox
+	MODEL_TYPE_TIME_DEPENDENT_INTERVAL_CENSORED,        // Cox
+	MODEL_TYPE_TIME_INDEPENDENT_INTERVAL_CENSORED,      // Cox
 };
 
 // Specifies how to normalize a variable's values (across all the values that
@@ -375,338 +375,339 @@ struct VariableParams {
 //                    read_time_dep_interval_censored_data::PopulateSubjectInfo()
 struct ModelAndDataParams {
 
-  string error_msg_;  // Will be populated on any error.
+	string error_msg_;  // Will be populated on any error.
 
-  // ================= Category 1: User-Provided Specificiations ===============
-  // Data File.
-  FileInfo file_;  // Mandatory.
-  // Output File.
-  FileInfo outfile_;  // Mandatory.
+	// ================= Category 1: User-Provided Specificiations ===============
+	// Data File.
+	FileInfo file_;  // Mandatory.
+	// Output File.
+	FileInfo outfile_;  // Mandatory.
 
-  // Model.
-  ModelType model_type_;  // Mandatory, each *_main.cpp file should fill this in
-  // NOTE: The model's RHS should *not* explicitly include the Error Term (for
-  // Linear models) nor the Constant Term (for Linear and Logisitc models), as
-  // the structure of the code will implicitly create these as appropriate; this
-  // is true even in the case of simulations (the error/constant term is
-  // handled specially for simulations; but the user should not include them
-  // in the specification of the model's RHS, the constant coefficient for
-  // the constant term multiplier will be picked up separately via --beta
-  // command-line arg).
-  string model_str_;      // Mandatory.
+	// Model.
+	ModelType model_type_;  // Mandatory, each *_main.cpp file should fill this in
+	// NOTE: The model's RHS should *not* explicitly include the Error Term (for
+	// Linear models) nor the Constant Term (for Linear and Logisitc models), as
+	// the structure of the code will implicitly create these as appropriate; this
+	// is true even in the case of simulations (the error/constant term is
+	// handled specially for simulations; but the user should not include them
+	// in the specification of the model's RHS, the constant coefficient for
+	// the constant term multiplier will be picked up separately via --beta
+	// command-line arg).
+	string model_str_;      // Mandatory.
 
-  // Maximum number of iterations allowed in the underlying regression algorithm
-  int max_itr_;
+	// Maximum number of iterations allowed in the underlying regression algorithm
+	int max_itr_;
 
-  // Analysis to run.
-  AnalysisParams analysis_params_;
-  // SummaryStatistics to print.
-  SummaryStatisticsPrintOptions print_options_;
+	// Analysis to run.
+	AnalysisParams analysis_params_;
+	// SummaryStatistics to print.
+	SummaryStatisticsPrintOptions print_options_;
 
-  // KME Multiplier.
-  KaplanMeierEstimatorType kme_type_;
-  KaplanMeierEstimatorType kme_type_for_log_rank_;
+	// KME Multiplier.
+	KaplanMeierEstimatorType kme_type_;
+	KaplanMeierEstimatorType kme_type_for_log_rank_;
 
-  // See explanation of field ties_constant_ in struct StratificationData.
-  bool use_ties_constant_;
+	// See explanation of field ties_constant_ in struct StratificationData.
+	bool use_ties_constant_;
 
-  // Subgroup: The full string following the --subgroup agrument.
-  string subgroup_str_;
-  
-  // Strata: The --strata argument.
-  string strata_str_;
+	// Subgroup: The full string following the --subgroup agrument.
+	string subgroup_str_;
 
-  // Id, Weight, and Family: the --id_col, --weight_col, and --family_cols arguments.
-  string id_str_;
-  string weight_str_;
-  string family_str_;
+	// Strata: The --strata argument.
+	string strata_str_;
 
-  // The --left_truncation_col argument.
-  string left_truncation_str_;
+	// Id, Weight, and Family: the --id_col, --weight_col, and --family_cols arguments.
+	string id_str_;
+	string weight_str_;
+	string family_str_;
 
-  // Variable and Data Params.
-  //   - String representation of collapse parameters; see comment above
-  //     ParseCollapseParams (in command_line_utils.h) for explanation of format
-  //     of this string, and use that function to parse it.
-  string collapse_params_str_;  // Optional. Default (empty): No collapsing.
-  //   - String representation of time parameters; see comment above
-  //     ParseTimeDependentParams (in command_line_utils.h) for explanation of
-  //     format of this string, and use that function to parse it.
-  // TODO(PHB): This field is disabled for now. If you want to use time-dependent
-  // params, use the interface of read_time_[in]dep_interval_censored_data.[h | cpp].
-  string time_params_str_;  // Optional. Default (empty): Either not relevant,
-                            // otherwise use all default TimeDependentParams.
-  //   - String representation of collapse parameters; see comment above
-  //     ParseVariableNormalizationParams (in command_line_utils.h) for
-  //     explanation of format of this string and use that function to parse it.
-  string var_norm_params_str_;  // Optional. Default (empty): Use default NormalizationParams.
-  //   - How linear terms should be standardized before computations.
-  VariableNormalization standardize_vars_;   
+	// The --left_truncation_col argument.
+	string left_truncation_str_;
 
-  // ============== Category 2: Parsed User-Provided Specificiations ===========
+	// Variable and Data Params.
+	//   - String representation of collapse parameters; see comment above
+	//     ParseCollapseParams (in command_line_utils.h) for explanation of format
+	//     of this string, and use that function to parse it.
+	string collapse_params_str_;  // Optional. Default (empty): No collapsing.
+	//   - String representation of time parameters; see comment above
+	//     ParseTimeDependentParams (in command_line_utils.h) for explanation of
+	//     format of this string, and use that function to parse it.
+	// TODO(PHB): This field is disabled for now. If you want to use time-dependent
+	// params, use the interface of read_time_[in]dep_interval_censored_data.[h | cpp].
+	string time_params_str_;  // Optional. Default (empty): Either not relevant,
+							// otherwise use all default TimeDependentParams.
+	//   - String representation of collapse parameters; see comment above
+	//     ParseVariableNormalizationParams (in command_line_utils.h) for
+	//     explanation of format of this string and use that function to parse it.
+	string var_norm_params_str_;  // Optional. Default (empty): Use default NormalizationParams.
+	//   - How linear terms should be standardized before computations.
+	VariableNormalization standardize_vars_;   
 
-  // Header of Input File: List of column names, indexed in the order they appear
-  // in the original data file.
-  vector<string> header_;  // Mandatory.
+	// ============== Category 2: Parsed User-Provided Specificiations ===========
 
-  // Used Columns: the set of columns in the data file needed for something
-  // (dep var, indep var, id, subgroup, strata, etc.).
-  // NOTE: The indexing of the items in this set is w.r.t. the original input
-  // data (i.e. same size as header_), and they are 0-based (first column is '0').
-  set<int> input_cols_used_;
+	// Header of Input File: List of column names, indexed in the order they appear
+	// in the original data file.
+	vector<string> header_;  // Mandatory.
+	
+	// Nominal Columns.
+	//   - The set of nominal columns, as detected from the variable names
+	//     (those with '$' suffix) and from reading the actual data.
+	//     NOTE: The indexing of the items in this set is w.r.t. the original input
+	//     data (i.e. same size as header_), and they are 0-based (first column is '0').
+	set<int> nominal_columns_;  // Optional. Default: Empty.
 
-  // Stores the RHS of the model. For example, for model:
-  //   Y = Log(X_1) * X_2 + X_3^2 + X_1 * X_3
-  // it would store everything on the RHS of the equal sign.
-  // NOTE: The Error Term (for LINEAR models) and the Constant Term (for
-  // LINEAR and LOGISTIC models) are *not* stored in model_rhs_.
-  Expression model_rhs_;  // Mandatory.
-  // Stores the LHS of the model.
-  DepVarDescription model_lhs_;
+	// Used Columns: the set of columns in the data file needed for something
+	// (dep var, indep var, id, subgroup, strata, etc.).
+	// NOTE: The indexing of the items in this set is w.r.t. the original input
+	// data (i.e. same size as header_), and they are 0-based (first column is '0').
+	set<int> input_cols_used_;
 
-  // Stores the Convergence Criteria (for the underlying regression algorithm).
-  ConvergenceCriteria convergence_criteria_;
+	// Stores the RHS of the model. For example, for model:
+	//   Y = Log(X_1) * X_2 + X_3^2 + X_1 * X_3
+	// it would store everything on the RHS of the equal sign.
+	// NOTE: The Error Term (for LINEAR models) and the Constant Term (for
+	// LINEAR and LOGISTIC models) are *not* stored in model_rhs_.
+	Expression model_rhs_;  // Mandatory.
+	// Stores the LHS of the model.
+	DepVarDescription model_lhs_;
 
-  // Variable and Data Params.
-  //   - Stores the parameters for all variables, once parsed from the
-  //     string representations above. This vector is indexed in accordance
-  //     to header_ above (so those two fields have same size; namely, the
-  //     number of columns in the original input data file).
-  vector<VariableParams> var_params_;  // Mandatory.
+	// Stores the Convergence Criteria (for the underlying regression algorithm).
+	ConvergenceCriteria convergence_criteria_;
 
-  // Subgroup Params.
-  //   - The LHS of the --subgroup argument; holds the column names and
-  //     indices of the columns that determine subgroup membership; the
-  //     indexing of the vector is the order of the subgroups entered by
-  //     the user. The column name_ field is populated from user input;
-  //     the column index_ is from reading (header line of) data file.
-  //     NOTE: The column indices for each of the subgroup_cols_ is w.r.t.
-  //     the original input data (i.e. same size as header_), and is 0-based.
-  vector<VariableColumn> subgroup_cols_;  // Optional. Default: Empty.
-  //   - The RHS (i.e. string representation) of the subgroups. Outer vector
-  //     has size equal to the number of subgroups, inner-vector has size
-  //     equal to the number of columns that determine subgroup membership.
-  vector<vector<string>> subgroups_;  // Optional. Default: Empty.
-  bool use_subgroup_as_covariate_;  // Optional. Default: 'false'.
+	// Variable and Data Params.
+	//   - Stores the parameters for all variables, once parsed from the
+	//     string representations above. This vector is indexed in accordance
+	//     to header_ above (so those two fields have same size; namely, the
+	//     number of columns in the original input data file).
+	vector<VariableParams> var_params_;  // Mandatory.
 
-  // Strata Params.
-  //   - Holds the column names and indices of the columns that determine
-  //     stratification index. The column name_ field is populated from user
-  //     input; the column index_ is from reading (header line of) data file.
-  //     NOTE: The column indices for each of the subgroup_cols_ is w.r.t.
-  //     the original input data (i.e. same size as header_), and is 0-based.
-  set<VariableColumn> strata_cols_;  // Optional. Default (empty) means no stratification.
+	// Subgroup Params.
+	//   - The LHS of the --subgroup argument; holds the column names and
+	//     indices of the columns that determine subgroup membership; the
+	//     indexing of the vector is the order of the subgroups entered by
+	//     the user. The column name_ field is populated from user input;
+	//     the column index_ is from reading (header line of) data file.
+	//     NOTE: The column indices for each of the subgroup_cols_ is w.r.t.
+	//     the original input data (i.e. same size as header_), and is 0-based.
+	vector<VariableColumn> subgroup_cols_;  // Optional. Default: Empty.
+	//   - The RHS (i.e. string representation) of the subgroups. Outer vector
+	//     has size equal to the number of subgroups, inner-vector has size
+	//     equal to the number of columns that determine subgroup membership.
+	vector<vector<string>> subgroups_;  // Optional. Default: Empty.
+	bool use_subgroup_as_covariate_;  // Optional. Default: 'false'.
 
-  // Variable and Data Params.
-  //   - Name and index of the id column; column name_ is populated from
-  //     user input; column index_ is from reading (header line of) data file.
-  //     NOTE: The column index is w.r.t. the original input data (i.e. same
-  //     size as header_), and is 0-based.
-  VariableColumn id_col_;  // Optional. Default: Empty.
-  //   - Name and index of the family column; column name_ is populated from
-  //     user input; column index_ is from reading (header line of) data file.
-  //     NOTE: The column index is w.r.t. the original input data (i.e. same
-  //     size as header_), and is 0-based.
-  vector<VariableColumn> family_cols_;  // Optional. Default: Empty.
-  //   - Name and index of the weight column; column name_ is populated from
-  //     user input; column index_ is from reading (header line of) data file.
-  //     NOTE: The column index is w.r.t. the original input data (i.e. same
-  //     size as header_), and is 0-based.
-  VariableColumn weight_col_;  // Optional. Default: Empty.
+	// Strata Params.
+	//   - Holds the column names and indices of the columns that determine
+	//     stratification index. The column name_ field is populated from user
+	//     input; the column index_ is from reading (header line of) data file.
+	//     NOTE: The column indices for each of the subgroup_cols_ is w.r.t.
+	//     the original input data (i.e. same size as header_), and is 0-based.
+	set<VariableColumn> strata_cols_;  // Optional. Default (empty) means no stratification.
 
-  // ============ Category 3: Fields from Input Data File ======================
+	// Variable and Data Params.
+	//   - Name and index of the id column; column name_ is populated from
+	//     user input; column index_ is from reading (header line of) data file.
+	//     NOTE: The column index is w.r.t. the original input data (i.e. same
+	//     size as header_), and is 0-based.
+	VariableColumn id_col_;  // Optional. Default: Empty.
+	//   - Name and index of the family column; column name_ is populated from
+	//     user input; column index_ is from reading (header line of) data file.
+	//     NOTE: The column index is w.r.t. the original input data (i.e. same
+	//     size as header_), and is 0-based.
+	vector<VariableColumn> family_cols_;  // Optional. Default: Empty.
+	//   - Name and index of the weight column; column name_ is populated from
+	//     user input; column index_ is from reading (header line of) data file.
+	//     NOTE: The column index is w.r.t. the original input data (i.e. same
+	//     size as header_), and is 0-based.
+	VariableColumn weight_col_;  // Optional. Default: Empty.
 
-  // Nominal Columns.
-  //   - The set of nominal columns, as detected from the variable names
-  //     (those with '$' suffix) and from reading the actual data.
-  //     NOTE: The indexing of the items in this set is w.r.t. the original input
-  //     data (i.e. same size as header_), and they are 0-based (first column is '0').
-  set<int> nominal_columns_;  // Optional. Default: Empty.
-  //   - The column indices of nominal columns, and the set of all distinct
-  //     values encountered in each such column.
-  //     NOTE: Unlike 'nominal_columns_' above, the indexing of the items
-  //     (columns) in this map is w.r.t. the temporary 'data_values' object (e.g.
-  //     created by ReadTableWithHeader::ReadDataFile()); they are 0-based w.r.t.
-  //     those columns. In particular, this data structure differs from the
-  //     rows/columns of the original data file in that only relevant columns
-  //     (those involved in the Model, family, etc.) are present.
-  map<int, set<string>> nominal_columns_and_values_;  // Optional. Default: Empty
+	// ============ Category 3: Fields from Input Data File ======================
 
-  // Missing Value (NA) rows.
-  //   - Indexed by input data row: which rows have missing values and the
-  //     corresponding columns with missing values.
-  //     NOTE: Similar to 'nominal_columns_and_values_' above, but unlike
-  //     'nominal_columns_' above, the indexing of the rows
-  //     (na_rows_and_columns_.first) and columns in the sets
-  //     (na_rows_and_columns_.second) is w.r.t. the temporary 'data_values'
-  //     object (e.g. created by ReadTableWithHeader::ReadDataFile()); they
-  //     are 0-based w.r.t. those rows and columns. In particular, this data
-  //     structure differs from the rows/columns of the original data file in
-  //     that only relevant columns (those involved in the Model, family, etc.)
-  //     are present.
-  map<int, set<int> > na_rows_and_columns_;  // Optional Default: Empty.
+	//   - The column indices of nominal columns, and the set of all distinct
+	//     values encountered in each such column.
+	//     NOTE: Unlike 'nominal_columns_' above, the indexing of the items
+	//     (columns) in this map is w.r.t. the temporary 'data_values' object (e.g.
+	//     created by ReadTableWithHeader::ReadDataFile()); they are 0-based w.r.t.
+	//     those columns. In particular, this data structure differs from the
+	//     rows/columns of the original data file in that only relevant columns
+	//     (those involved in the Model, family, etc.) are present.
+	map<int, set<string>> nominal_columns_and_values_;  // Optional. Default: Empty
 
-  // ============ Category 4: Fields from manipulating/aggregating =============
+	// Missing Value (NA) rows.
+	//   - Indexed by input data row: which rows have missing values and the
+	//     corresponding columns with missing values.
+	//     NOTE: Similar to 'nominal_columns_and_values_' above, but unlike
+	//     'nominal_columns_' above, the indexing of the rows
+	//     (na_rows_and_columns_.first) and columns in the sets
+	//     (na_rows_and_columns_.second) is w.r.t. the temporary 'data_values'
+	//     object (e.g. created by ReadTableWithHeader::ReadDataFile()); they
+	//     are 0-based w.r.t. those rows and columns. In particular, this data
+	//     structure differs from the rows/columns of the original data file in
+	//     that only relevant columns (those involved in the Model, family, etc.)
+	//     are present.
+	map<int, set<int> > na_rows_and_columns_;  // Optional Default: Empty.
 
-  // The following two fields must wait until reading the full data file before
-  // populating, as we don't know all the linear terms until we've identified
-  // all nominal variables and all of their distinct values, for expanding them
-  // into the appropriate number of indicator variables.
-  //   - Legend: List of all the linear terms (matches user-entered model RHS,
-  //             except nominal variables have been expanded to the appropriate
-  //             number of indicator functions).
-  vector<string> legend_;
-  //   - Final Model: The LHS and RHS of the model, where the RHS has been
-  //                  expanded (for nominal variables); the RHS is basically
-  //                  just a '+'-prefixed concatenation of the terms in legend_;
-  //                  used for printing the model in the output file(s).
-  string final_model_;
-  //   - Map from the original header (Column Names) to the indices w.r.t.
-  //     to legend_ for which these Columns (Variables) appear. This
-  //     vector has size matching header_ above, and the i^th entry lists
-  //     the indices (w.r.t. legend_) in which the i^th Variable of header
-  //     appears.
-  vector<set<int>> header_index_to_legend_indices_;
-  //   - Map from the linear terms in the original model RHS to the
-  //     indices w.r.t. legend_ for which these linear terms appear.
-  vector<set<int>> orig_linear_terms_to_legend_indices_;
+	// ============ Category 4: Fields from manipulating/aggregating =============
 
-  // Linear Term Statistics.
-  //   - In same order as the linear terms (vector<Expression>) in model_rhs_.
-  //     Holds the statistics (mean, std dev) for each linear term; the bool
-  //     indicates whether this linear term has only bivarate values '0' and '1'.
-  vector<tuple<bool, double, double>> linear_terms_mean_and_std_dev_;
+	// The following two fields must wait until reading the full data file before
+	// populating, as we don't know all the linear terms until we've identified
+	// all nominal variables and all of their distinct values, for expanding them
+	// into the appropriate number of indicator variables.
+	//   - Legend: List of all the linear terms (matches user-entered model RHS,
+	//             except nominal variables have been expanded to the appropriate
+	//             number of indicator functions).
+	vector<string> legend_;
+	//   - Final Model: The LHS and RHS of the model, where the RHS has been
+	//                  expanded (for nominal variables); the RHS is basically
+	//                  just a '+'-prefixed concatenation of the terms in legend_;
+	//                  used for printing the model in the output file(s).
+	string final_model_;
+	//   - Map from the original header (Column Names) to the indices w.r.t.
+	//     to legend_ for which these Columns (Variables) appear. This
+	//     vector has size matching header_ above, and the i^th entry lists
+	//     the indices (w.r.t. legend_) in which the i^th Variable of header
+	//     appears.
+	vector<set<int>> header_index_to_legend_indices_;
+	//   - Map from the linear terms in the original model RHS to the
+	//     indices w.r.t. legend_ for which these linear terms appear.
+	vector<set<int>> orig_linear_terms_to_legend_indices_;
 
-  // Subgroup Params.
-  //   - Map from subgroup index to the set of rows belonging to that subgroup.
-  //     NOTE: The rows in the set are 1-based (as opposed to 0-based), and are
-  //     indexed w.r.t. the temporary 'data_values' object (e.g. created by
-  //     ReadTableWithHeader::ReadDataFile()); in particular, this may be
-  //     different than e.g. linear_term_values_.rows(), since the latter
-  //     may have skipped NA rows and rows that were not part of any subgroup.
-  map<int, set<int>> subgroup_rows_per_index_;  // Optional. Default: Empty.
+	// Linear Term Statistics.
+	//   - In same order as the linear terms (vector<Expression>) in model_rhs_.
+	//     Holds the statistics (mean, std dev) for each linear term; the bool
+	//     indicates whether this linear term has only bivarate values '0' and '1'.
+	vector<tuple<bool, double, double>> linear_terms_mean_and_std_dev_;
 
-  // Strata Params.
-  //   - Map from data row (after skipped, e.g. NA, rows have been removed)
-  //     to the strata that that row belongs to.
-  //     NOTE: The Keys (rows) are 0-based (in contrast to the
-  //     'subgroup_rows_per_index_' field above, which is 1-based), and are
-  //     indexed w.r.t. the temporary 'data_values' object (e.g. created by
-  //     ReadTableWithHeader::ReadDataFile()); in particular, this may be
-  //     different than e.g. linear_term_values_.rows(), since the latter
-  //     may have skipped NA rows and rows that were not part of any subgroup.
-  map<int, int> row_to_strata_;  // Optional. Default: Empty.
+	// Subgroup Params.
+	//   - Map from subgroup index to the set of rows belonging to that subgroup.
+	//     NOTE: The rows in the set are 1-based (as opposed to 0-based), and are
+	//     indexed w.r.t. the temporary 'data_values' object (e.g. created by
+	//     ReadTableWithHeader::ReadDataFile()); in particular, this may be
+	//     different than e.g. linear_term_values_.rows(), since the latter
+	//     may have skipped NA rows and rows that were not part of any subgroup.
+	map<int, set<int>> subgroup_rows_per_index_;  // Optional. Default: Empty.
 
-  //   - The id (from id_col_) of each (non-NA) row; vector is indexed
-  //     corresponding to input data file (minus skipped, e.g. NA, rows).
-  vector<string> ids_;  // Optional. Default: Empty.
-  //   - The weight (from weight_col_) of each (non-NA) row; vector is indexed
-  //     corresponding to input data file (minus skipped, e.g. NA, rows).
-  vector<double> weights_;  // Optional. Default: Empty.
-  //   - The famil[y | ies] this row belongs to (based on the row's value in
-  //     the family_col_); vector is indexed corresponding to input data file
-  //     (minus skipped, e.g. NA, rows).
-  vector<vector<string>> families_;  // Optional. Default: Empty.
+	// Strata Params.
+	//   - Map from data row (after skipped, e.g. NA, rows have been removed)
+	//     to the strata that that row belongs to.
+	//     NOTE: The Keys (rows) are 0-based (in contrast to the
+	//     'subgroup_rows_per_index_' field above, which is 1-based), and are
+	//     indexed w.r.t. the temporary 'data_values' object (e.g. created by
+	//     ReadTableWithHeader::ReadDataFile()); in particular, this may be
+	//     different than e.g. linear_term_values_.rows(), since the latter
+	//     may have skipped NA rows and rows that were not part of any subgroup.
+	map<int, int> row_to_strata_;  // Optional. Default: Empty.
 
-  // Missing Value (NA) rows.
-  //   - Just a list of rows that were skipped due to missing values; this
-  //     may not simply equal Keys(na_rows_and_columns_) if, e.g., none
-  //     of the missing values appeared in relevant columns, or if the user
-  //     specified *not* to skip rows with missing values.
-  //     NOTE: The rows in the set are 1-based (as opposed to 0-based), and are
-  //     indexed w.r.t. the temporary 'data_values' object (e.g. created by
-  //     ReadTableWithHeader::ReadDataFile()); in particular, this may be
-  //     different than e.g. linear_term_values_.rows(), since the latter
-  //     may have skipped rows that had missing values, were not part of
-  //     any subgroup, etc.
-  set<int> na_rows_skipped_;  // Optional. Default: Empty.
+	//   - The id (from id_col_) of each (non-NA) row; vector is indexed
+	//     corresponding to input data file (minus skipped, e.g. NA, rows).
+	vector<string> ids_;  // Optional. Default: Empty.
+	//   - The weight (from weight_col_) of each (non-NA) row; vector is indexed
+	//     corresponding to input data file (minus skipped, e.g. NA, rows).
+	vector<double> weights_;  // Optional. Default: Empty.
+	//   - The famil[y | ies] this row belongs to (based on the row's value in
+	//     the family_col_); vector is indexed corresponding to input data file
+	//     (minus skipped, e.g. NA, rows).
+	vector<vector<string>> families_;  // Optional. Default: Empty.
 
-  // Data Values.
-  //   - Holds the values for the linear terms. The outer vector is indexed
-  //     corresponding to input data file (minus skipped, e.g. NA, rows); the
-  //     inner vector holds values of the linear terms, in the order that they
-  //     appear in legend_.
-  //     NOTE: This data structure will *not* hold (even for simulations) the
-  //     values for the linear term representing the Error Term (for LINEAR
-  //     models), but it *does* hold the Constant Term (for LINEAR and
-  //     LOGISTIC models, for simulations and not).
-  MatrixXd linear_term_values_;
-  //   - Holds the values for the dependent variable(s). Depending on the
-  //     model (Linear, Logistic, Cox, etc.), a unique field within DepVarHolder
-  //     will be populated. Irregardless of which it is, the vector below is
-  //     indexed corresponding to input data file (minus skipped, e.g. NA, rows).
-  DepVarHolder dep_vars_;
+	// Missing Value (NA) rows.
+	//   - Just a list of rows that were skipped due to missing values; this
+	//     may not simply equal Keys(na_rows_and_columns_) if, e.g., none
+	//     of the missing values appeared in relevant columns, or if the user
+	//     specified *not* to skip rows with missing values.
+	//     NOTE: The rows in the set are 1-based (as opposed to 0-based), and are
+	//     indexed w.r.t. the temporary 'data_values' object (e.g. created by
+	//     ReadTableWithHeader::ReadDataFile()); in particular, this may be
+	//     different than e.g. linear_term_values_.rows(), since the latter
+	//     may have skipped rows that had missing values, were not part of
+	//     any subgroup, etc.
+	set<int> na_rows_skipped_;  // Optional. Default: Empty.
 
-  // ====================== Default Constructor ================================
-  ModelAndDataParams() {
-    model_type_ = ModelType::MODEL_TYPE_UNKNOWN;
-    max_itr_ = 1000;
-    model_str_ = "";
-    subgroup_str_ = "";
-    strata_str_ = "";
-    id_str_ = "";
-    weight_str_ = "";
-    family_str_ = "";
-    left_truncation_str_ = "";
-    collapse_params_str_ = "";
-    time_params_str_ = "";
-    var_norm_params_str_ = "";
-    error_msg_ = "";
-    use_subgroup_as_covariate_ = false;
-    standardize_vars_ =
-        VariableNormalization::VAR_NORM_STD_W_N_MINUS_ONE_NON_BINARY;
-    kme_type_ = KaplanMeierEstimatorType::NONE;
-    kme_type_for_log_rank_ = KaplanMeierEstimatorType::NONE;
-    use_ties_constant_ = true;
-  }
+	// Data Values.
+	//   - Holds the values for the linear terms. The outer vector is indexed
+	//     corresponding to input data file (minus skipped, e.g. NA, rows); the
+	//     inner vector holds values of the linear terms, in the order that they
+	//     appear in legend_.
+	//     NOTE: This data structure will *not* hold (even for simulations) the
+	//     values for the linear term representing the Error Term (for LINEAR
+	//     models), but it *does* hold the Constant Term (for LINEAR and
+	//     LOGISTIC models, for simulations and not).
+	MatrixXd linear_term_values_;
+	//   - Holds the values for the dependent variable(s). Depending on the
+	//     model (Linear, Logistic, Cox, etc.), a unique field within DepVarHolder
+	//     will be populated. Irregardless of which it is, the vector below is
+	//     indexed corresponding to input data file (minus skipped, e.g. NA, rows).
+	DepVarHolder dep_vars_;
 
-  void Copy(const ModelAndDataParams& params) {
-    file_.Copy(params.file_);
-    analysis_params_.Copy(params.analysis_params_);
-    model_rhs_ = params.model_rhs_;
-    model_lhs_ = params.model_lhs_;
-    id_col_ = params.id_col_;
-    weight_col_ = params.weight_col_;
-    dep_vars_ = params.dep_vars_;
+	// ====================== Default Constructor ================================
+	ModelAndDataParams() {
+		model_type_ = ModelType::MODEL_TYPE_UNKNOWN;
+		max_itr_ = 1000;
+		model_str_ = "";
+		subgroup_str_ = "";
+		strata_str_ = "";
+		id_str_ = "";
+		weight_str_ = "";
+		family_str_ = "";
+		left_truncation_str_ = "";
+		collapse_params_str_ = "";
+		time_params_str_ = "";
+		var_norm_params_str_ = "";
+		error_msg_ = "";
+		use_subgroup_as_covariate_ = false;
+		standardize_vars_ =
+			VariableNormalization::VAR_NORM_STD_W_N_MINUS_ONE_NON_BINARY;
+		kme_type_ = KaplanMeierEstimatorType::NONE;
+		kme_type_for_log_rank_ = KaplanMeierEstimatorType::NONE;
+		use_ties_constant_ = true;
+	}
 
-    error_msg_ = params.error_msg_;
-    model_type_ = params.model_type_;
-    model_str_ = params.model_str_;
-    kme_type_ = params.kme_type_;
-    kme_type_for_log_rank_ = params.kme_type_for_log_rank_;
-    use_ties_constant_ = params.use_ties_constant_;
-    subgroup_str_ = params.subgroup_str_;
-    strata_str_ = params.strata_str_;
-    id_str_ = params.id_str_;
-    weight_str_ = params.weight_str_;
-    family_str_ = params.family_str_;
-    left_truncation_str_ = params.left_truncation_str_;
-    collapse_params_str_ = params.collapse_params_str_;
-    time_params_str_ = params.time_params_str_;
-    var_norm_params_str_ = params.var_norm_params_str_;
-    standardize_vars_ = params.standardize_vars_;
-    header_ = params.header_;
-    input_cols_used_ = params.input_cols_used_;
-    var_params_ = params.var_params_;
-    subgroup_cols_ = params.subgroup_cols_;
-    subgroups_ = params.subgroups_;
-    use_subgroup_as_covariate_ = params.use_subgroup_as_covariate_;
-    strata_cols_ = params.strata_cols_;
-    family_cols_ = params.family_cols_;
-    nominal_columns_ = params.nominal_columns_;
-    nominal_columns_and_values_ = params.nominal_columns_and_values_;
-    na_rows_and_columns_ = params.na_rows_and_columns_;
-    legend_ = params.legend_;
-    final_model_ = params.final_model_;
-    linear_terms_mean_and_std_dev_ = params.linear_terms_mean_and_std_dev_;
-    subgroup_rows_per_index_ = params.subgroup_rows_per_index_;
-    row_to_strata_ = params.row_to_strata_;
-    ids_ = params.ids_;
-    weights_ = params.weights_;
-    families_ = params.families_;
-    na_rows_skipped_ = params.na_rows_skipped_;
-    linear_term_values_ = params.linear_term_values_;
-  }
+	void Copy(const ModelAndDataParams& params) {
+		file_.Copy(params.file_);
+		analysis_params_.Copy(params.analysis_params_);
+		model_rhs_ = params.model_rhs_;
+		model_lhs_ = params.model_lhs_;
+		id_col_ = params.id_col_;
+		weight_col_ = params.weight_col_;
+		dep_vars_ = params.dep_vars_;
+
+		error_msg_ = params.error_msg_;
+		model_type_ = params.model_type_;
+		model_str_ = params.model_str_;
+		kme_type_ = params.kme_type_;
+		kme_type_for_log_rank_ = params.kme_type_for_log_rank_;
+		use_ties_constant_ = params.use_ties_constant_;
+		subgroup_str_ = params.subgroup_str_;
+		strata_str_ = params.strata_str_;
+		id_str_ = params.id_str_;
+		weight_str_ = params.weight_str_;
+		family_str_ = params.family_str_;
+		left_truncation_str_ = params.left_truncation_str_;
+		collapse_params_str_ = params.collapse_params_str_;
+		time_params_str_ = params.time_params_str_;
+		var_norm_params_str_ = params.var_norm_params_str_;
+		standardize_vars_ = params.standardize_vars_;
+		header_ = params.header_;
+		input_cols_used_ = params.input_cols_used_;
+		var_params_ = params.var_params_;
+		subgroup_cols_ = params.subgroup_cols_;
+		subgroups_ = params.subgroups_;
+		use_subgroup_as_covariate_ = params.use_subgroup_as_covariate_;
+		strata_cols_ = params.strata_cols_;
+		family_cols_ = params.family_cols_;
+		nominal_columns_ = params.nominal_columns_;
+		nominal_columns_and_values_ = params.nominal_columns_and_values_;
+		na_rows_and_columns_ = params.na_rows_and_columns_;
+		legend_ = params.legend_;
+		final_model_ = params.final_model_;
+		linear_terms_mean_and_std_dev_ = params.linear_terms_mean_and_std_dev_;
+		subgroup_rows_per_index_ = params.subgroup_rows_per_index_;
+		row_to_strata_ = params.row_to_strata_;
+		ids_ = params.ids_;
+		weights_ = params.weights_;
+		families_ = params.families_;
+		na_rows_skipped_ = params.na_rows_skipped_;
+		linear_term_values_ = params.linear_term_values_;
+	}
 };
 
 /* ============================= END Structures ============================= */

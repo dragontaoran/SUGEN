@@ -27,19 +27,22 @@ using namespace std;
 
 static const char kErrorTermId[] = "Error_Term";
 
-namespace file_reader_utils {
+namespace file_reader_utils 
+{
 
-string ReadInput::GetErrorTermId() { return kErrorTermId; }
+	string ReadInput::GetErrorTermId() { return kErrorTermId; }
 
-bool ReadInput::IsTrueIndicator(const string& value) {
-  return (value == "1") || (value == "1.0") || (value == "T") ||
-         (value == "True") || (value == "true") || (value == "TRUE");
-}
+	bool ReadInput::IsTrueIndicator(const string& value) 
+	{
+		return (value == "1") || (value == "1.0") || (value == "T") ||
+			(value == "True") || (value == "true") || (value == "TRUE");
+	}
 
-bool ReadInput::IsFalseIndicator(const string& value) {
-  return (value == "0") || (value == "0.0") || (value == "F") ||
-         (value == "False") || (value == "false") || (value == "FALSE");
-}
+	bool ReadInput::IsFalseIndicator(const string& value) 
+	{
+		return (value == "0") || (value == "0.0") || (value == "F") ||
+			(value == "False") || (value == "false") || (value == "FALSE");
+	}
 
 int ReadInput::GetIntegerFromUser(const string& query_text) {
   int n;
@@ -871,221 +874,255 @@ bool ReadInput::ParseSampleFamilies(
   return true;
 }
 
-bool ReadInput::ComputeRowDependentVariableValues(
+bool ReadInput::ComputeRowDependentVariableValues (
     const ModelType& model_type,
     const vector<DataHolder>& sample_values,
     const map<string, int>& name_to_column,
     const map<int, set<string> >& nominal_columns,
     const DepVarDescription& dependent_var,
-    DepVarHolder* dep_var, string* error_msg) {
-  // Create the mapping of variable name to value.
-  map<string, double> var_values;
-  if (!GetVariableValuesFromDataRow(
-          nominal_columns, name_to_column, sample_values,
-          &var_values, error_msg)) {
-    return false;
-  }
+    DepVarHolder* dep_var, string* error_msg) 
+{
+	// Create the mapping of variable name to value.
+	map<string, double> var_values;
+	if (!GetVariableValuesFromDataRow(nominal_columns, name_to_column, sample_values, &var_values, error_msg)) 
+	{
+		return false;
+	}
 
-  // Parse Dependent Variable(s), according to model_type.
-  if (model_type == ModelType::MODEL_TYPE_LINEAR) {
-    dep_var->dep_vars_linear_.push_back(double());
-    if (!EvaluateExpression(
-            dependent_var.model_lhs_linear_, var_values,
-            &dep_var->dep_vars_linear_.back(), error_msg)) {
-      return false;
-    }
-    return true;
-  } else if (model_type == ModelType::MODEL_TYPE_LOGISTIC) {
-    double logistic_value;
-    if (!EvaluateExpression(
-            dependent_var.model_lhs_logistic_, var_values,
-            &logistic_value, error_msg)) {
-      return false;
-    }
-    dep_var->dep_vars_logistic_.push_back(logistic_value == 1.0);
-  } else if (model_type == ModelType::MODEL_TYPE_RIGHT_CENSORED_SURVIVAL) {
-    // Sanity check input.
-    if (dependent_var.model_lhs_cox_.size() != 2 &&
-        dependent_var.model_lhs_cox_.size() != 3) {
-      if (error_msg != nullptr) {
-        *error_msg += "ERROR in Parsing Dependent Variables: Too many terms (" +
-                      Itoa(static_cast<int>(dependent_var.model_lhs_cox_.size())) +
-                      ") in dependent_var.\n";
-      }
-      return false;
-    }
+	// Parse Dependent Variable(s), according to model_type.
+	if (model_type == ModelType::MODEL_TYPE_LINEAR) 
+	{
+		dep_var->dep_vars_linear_.push_back(double());
+		if (!EvaluateExpression(dependent_var.model_lhs_linear_, var_values, &dep_var->dep_vars_linear_.back(), error_msg))
+		{
+			return false;
+		}
+		return true;
+	} 
+	else if (model_type == ModelType::MODEL_TYPE_LOGISTIC) 
+	{
+		double logistic_value;
+		if (!EvaluateExpression(dependent_var.model_lhs_logistic_, var_values, &logistic_value, error_msg))
+		{
+			return false;
+		}
+		dep_var->dep_vars_logistic_.push_back(logistic_value == 1.0);
+	}
+	else if (model_type == ModelType::MODEL_TYPE_RIGHT_CENSORED_SURVIVAL)
+	{
+		// Sanity check input.
+		if (dependent_var.model_lhs_cox_.size() != 2 && dependent_var.model_lhs_cox_.size() != 3) 
+		{
+			if (error_msg != nullptr)
+			{
+				*error_msg += "ERROR in Parsing Dependent Variables: Too many terms (" +
+					Itoa(static_cast<int>(dependent_var.model_lhs_cox_.size())) +
+					") in dependent_var.\n";
+			}
+			return false;
+		}
 
-    // Parse the Dependent variables based on their values.
-    dep_var->dep_vars_cox_.push_back(CensoringData());
-    CensoringData& data = dep_var->dep_vars_cox_.back();
+		// Parse the Dependent variables based on their values.
+		dep_var->dep_vars_cox_.push_back(CensoringData());
+		CensoringData& data = dep_var->dep_vars_cox_.back();
 
-    // Parse Time (may be Survival Time or Censoring Time, depending on format
-    // of dependent_var.model_lhs_cox_).
-    double time;
-    if (!EvaluateExpression(
-            dependent_var.model_lhs_cox_[0], var_values,
-            &time, error_msg)) {
-      return false;
-    }
+		// Parse Time (may be Survival Time or Censoring Time, depending on format
+		// of dependent_var.model_lhs_cox_).
+		double time;
+		if (!EvaluateExpression(dependent_var.model_lhs_cox_[0], var_values, &time, error_msg))
+		{
+			return false;
+		}
 
-    // Parse Status variable, and sanity-check it is True or False, or the
-    // dummy value of -1.
-    double status;
-    if (!EvaluateExpression(
-            dependent_var.model_lhs_cox_.back(), var_values,
-            &status, error_msg)) {
-      return false;
-    }
-    if (status != 0.0 && status != 1.0 && status != -1.0) {
-      if (error_msg != nullptr) {
-        *error_msg += "ERROR: Status should be 0.0 (false) or 1.0 (true); found: " +
-                      Itoa(status) + ". NOTE: If you want to specify (survival "
-                      "time, censoring time), you need to also include status "
-                      "as a third argument (set it to -1, which indicates it "
-                      "should be ignored and computed as min(survival time, "
-                      "censoring time)).\n";
-      }
-      return false;
-    }
+		// Parse Status variable, and sanity-check it is True or False, or the
+		// dummy value of -1.
+		double status;
+		if (!EvaluateExpression(dependent_var.model_lhs_cox_.back(), var_values, &status, error_msg))
+		{
+			return false;
+		}
+		if (status != 0.0 && status != 1.0 && status != -1.0)
+		{
+			if (error_msg != nullptr)
+			{
+				*error_msg += "ERROR: Status should be 0.0 (false) or 1.0 (true); found: " +
+                    Itoa(status) + ". NOTE: If you want to specify (survival "
+                    "time, censoring time), you need to also include status "
+                    "as a third argument (set it to -1, which indicates it "
+                    "should be ignored and computed as min(survival time, "
+                    "censoring time)).\n";
+			}
+			return false;
+		}
 
-    // Parse Censoring Time, if available. Then combine Time, Censoring Time,
-    // and Status into a single CensoringData object.
-    if (dependent_var.model_lhs_cox_.size() == 3) {
-      double censoring_time;
-      if (!EvaluateExpression(
-              dependent_var.model_lhs_cox_[1], var_values,
-              &censoring_time, error_msg)) {
-        return false;
-      }
-      data.survival_time_ = time;
-      data.censoring_time_ = censoring_time;
-      if (FloatEq(status, -1.0)) {
-        // -1 Indicates that we should determine status based on survival and
-        // censoring times.
-        data.is_alive_ = (data.survival_time_ > data.censoring_time_);
-      } else if (FloatEq(status, 0.0)) {
-        if (data.survival_time_ > data.censoring_time_) {
-          if (error_msg != nullptr) {
-            *error_msg += "ERROR: Status indicates not alive, but survival time (" +
-                          Itoa(data.survival_time_) + ") is larger than censoring time (" +
-                          Itoa(data.censoring_time_) + ").\n";
-          }
-          return false;
-        }
-        data.is_alive_ = true;
-      } else if (FloatEq(status, 1.0)) {
-        if (data.survival_time_ < data.censoring_time_) {
-          if (error_msg != nullptr) {
-            *error_msg += "ERROR: Status indicates alive, but survival time (" +
-                          Itoa(data.survival_time_) + ") is less than censoring time (" +
-                          Itoa(data.censoring_time_) + ").\n";
-          }
-          return false;
-        }
-        data.is_alive_ = false;
-      }
-    } else {
-      if (status == -1.0) {
-        if (error_msg != nullptr) {
-          *error_msg += "ERROR: Status should be 0.0 (false) or 1.0 (true); found: " +
-                        Itoa(status) + ". NOTE: If you want to specify (survival "
-                        "time, censoring time), you need to also include status "
-                        "as a third argument (set it to -1, which indicates it "
-                        "should be ignored and computed as min(survival time, "
-                        "censoring time)).\n";
-        }
-        return false;
-      }
-      data.is_alive_ = status == 0.0;
-      if (data.is_alive_) {
-        data.censoring_time_ = time;
-        // Artificially set survival time to be bigger than censoring_time_,
-        // to ensure it is not used: All functions using CensoringData should
-        // look at is_alive_ to determine which (among survival_time_ and
-        // censoring_time_) is used; this is just a safeguard, in case there
-        // are accidentally any places that use the minimum of the two, in
-        // which case we don't want the default value of 0.0 for an
-        // uninitialized survival_time_ to be the min.
-        data.survival_time_ = time + 1.0;
-      } else {
-        data.survival_time_ = time;
-        // Artificially set censoring_time_ to be bigger than survival_time_,
-        // for same reason as above (in reverse).
-        data.censoring_time_ = time + 1.0;
-      }
-    }
+		// Parse Censoring Time, if available. Then combine Time, Censoring Time,
+		// and Status into a single CensoringData object.
+		if (dependent_var.model_lhs_cox_.size() == 3)
+		{
+			double censoring_time;
+			if (!EvaluateExpression(dependent_var.model_lhs_cox_[1], var_values, &censoring_time, error_msg))
+			{
+				return false;
+			}
+			data.survival_time_ = time;
+			data.censoring_time_ = censoring_time;
+			if (FloatEq(status, -1.0))
+			{
+				// -1 Indicates that we should determine status based on survival and
+				// censoring times.
+				data.is_alive_ = (data.survival_time_ > data.censoring_time_);
+			} 
+			else if (FloatEq(status, 0.0))
+			{
+				if (data.survival_time_ > data.censoring_time_)
+				{
+					if (error_msg != nullptr)
+					{
+						*error_msg += "ERROR: Status indicates not alive, but survival time (" +
+							Itoa(data.survival_time_) + ") is larger than censoring time (" +
+							Itoa(data.censoring_time_) + ").\n";
+					}
+					return false;
+				}
+			data.is_alive_ = true;
+			} 
+			else if (FloatEq(status, 1.0))
+			{
+				if (data.survival_time_ < data.censoring_time_) {
+					if (error_msg != nullptr) {
+						*error_msg += "ERROR: Status indicates alive, but survival time (" +
+							Itoa(data.survival_time_) + ") is less than censoring time (" +
+							Itoa(data.censoring_time_) + ").\n";
+					}
+					return false;
+				}
+				data.is_alive_ = false;
+			}
+		} 
+		else 
+		{
+			if (status == -1.0)
+			{
+				if (error_msg != nullptr)
+				{
+					*error_msg += "ERROR: Status should be 0.0 (false) or 1.0 (true); found: " +
+						Itoa(status) + ". NOTE: If you want to specify (survival "
+						"time, censoring time), you need to also include status "
+						"as a third argument (set it to -1, which indicates it "
+						"should be ignored and computed as min(survival time, "
+						"censoring time)).\n";
+				}
+				return false;
+			}
+			data.is_alive_ = status == 0.0;
+			if (data.is_alive_)
+			{
+				data.censoring_time_ = time;
+				// Artificially set survival time to be bigger than censoring_time_,
+				// to ensure it is not used: All functions using CensoringData should
+				// look at is_alive_ to determine which (among survival_time_ and
+				// censoring_time_) is used; this is just a safeguard, in case there
+				// are accidentally any places that use the minimum of the two, in
+				// which case we don't want the default value of 0.0 for an
+				// uninitialized survival_time_ to be the min.
+				data.survival_time_ = time + 1.0;
+			} 
+			else
+			{
+				data.survival_time_ = time;
+				// Artificially set censoring_time_ to be bigger than survival_time_,
+				// for same reason as above (in reverse).
+				data.censoring_time_ = time + 1.0;
+			}
+		}
 
-    // Parse left-truncation time, if appropriate.
-    if (!dependent_var.left_truncation_name_.empty()) {
-      map<string, double>::const_iterator itr =
-          var_values.find(dependent_var.left_truncation_name_);
-      if (itr == var_values.end()) {
-        if (error_msg != nullptr) {
-          *error_msg += "ERROR: Unable to find value for Left-truncation column.\n";
-        }
-        return false;
-      }
-      const double left_truncation_time = itr->second;
+		// Parse left-truncation time, if appropriate.
+		if (!dependent_var.left_truncation_name_.empty())
+		{
+			map<string, double>::const_iterator itr = var_values.find(dependent_var.left_truncation_name_);
+			if (itr == var_values.end())
+			{
+				if (error_msg != nullptr) {
+					*error_msg += "ERROR: Unable to find value for Left-truncation column.\n";
+				}
+				return false;
+			}
+			const double left_truncation_time = itr->second;
 
-      // Sanity-Check the left-truncation time is positive, and is no bigger
-      // than the survival/censoring time.
-      if (left_truncation_time < 0.0) {
-        if (error_msg != nullptr) {
-          *error_msg += "ERROR: Invalid Left-truncation time: " +
-                        Itoa(left_truncation_time) + ".\n";
-        }
-        return false;
-      } else if (data.is_alive_ && left_truncation_time > data.censoring_time_) {
-        if (error_msg != nullptr) {
-          *error_msg += "ERROR: Invalid Left-truncation time: " +
-                        Itoa(left_truncation_time) + " is larger than the "
-                        "Censoring Time (" + Itoa(data.censoring_time_) + ").\n";
-        }
-        return false;
-      } else if (!data.is_alive_ && left_truncation_time > data.survival_time_) {
-        if (error_msg != nullptr) {
-          *error_msg += "ERROR: Invalid Left-truncation time: " +
-                        Itoa(left_truncation_time) + " is larger than the "
-                        "Survival Time (" + Itoa(data.survival_time_) + ").\n";
-        }
-        return false;
-      }
+			// Sanity-Check the left-truncation time is positive, and is no bigger
+			// than the survival/censoring time.
+			if (left_truncation_time < 0.0) 
+			{
+				if (error_msg != nullptr)
+				{
+					*error_msg += "ERROR: Invalid Left-truncation time: " + Itoa(left_truncation_time) + ".\n";
+				}
+				return false;
+			} 
+			else if (data.is_alive_ && left_truncation_time > data.censoring_time_)
+			{
+				if (error_msg != nullptr)
+				{
+					*error_msg += "ERROR: Invalid Left-truncation time: " +
+						Itoa(left_truncation_time) + " is larger than the "
+						"Censoring Time (" + Itoa(data.censoring_time_) + ").\n";
+				}
+				return false;
+			} 
+			else if (!data.is_alive_ && left_truncation_time > data.survival_time_)
+			{
+				if (error_msg != nullptr)
+				{
+					*error_msg += "ERROR: Invalid Left-truncation time: " +
+						Itoa(left_truncation_time) + " is larger than the "
+						"Survival Time (" + Itoa(data.survival_time_) + ").\n";
+				}
+				return false;
+			}
 
-      // Store left-truncation time.
-      data.left_truncation_time_ = left_truncation_time;
-    }
+			// Store left-truncation time.
+			data.left_truncation_time_ = left_truncation_time;
+		}
 
-    return true;
-  } else if (model_type == ModelType::MODEL_TYPE_INTERVAL_CENSORED) {
-    if (error_msg != nullptr) {
-      *error_msg += "ERROR in parsing dep variable value: Unexpected model type "
-                    "MODEL_TYPE_INTERVAL_CENSORED (At this point, this model "
-                    "type should have been refined to either the time-dep or "
-                    "time-indep type.\n";
-    }
-    return false;
-  } else if (
+		return true;
+	} 
+	else if (model_type == ModelType::MODEL_TYPE_INTERVAL_CENSORED)
+	{
+		if (error_msg != nullptr)
+		{
+			*error_msg += "ERROR in parsing dep variable value: Unexpected model type "
+				"MODEL_TYPE_INTERVAL_CENSORED (At this point, this model "
+				"type should have been refined to either the time-dep or "
+				"time-indep type.\n";
+		}
+		return false;
+	} 
+	else if (
         model_type == ModelType::MODEL_TYPE_TIME_DEPENDENT_INTERVAL_CENSORED ||
-        model_type == ModelType::MODEL_TYPE_TIME_INDEPENDENT_INTERVAL_CENSORED) {
-    if (error_msg != nullptr) {
-      *error_msg += "ERROR in parsing dep variable value: Unexpected model type "
-                    "MODEL_TYPE_TIME_[IN]DEPENDENT_INTERVAL_CENSORED: the "
-                    "ComputeRowDependentVariableValues() function, called by "
-                    "StoreDataValuesInParams(), should not be used for "
-                    "Interval-Censored NPMLE (rather, use PopulateSubjectInfo(), "
-                    "perhaps via ReadTime[In]DepIntervalCensoredData::ReadFile(), "
-                    "to parse Dependent (and independent) variable values.\n";
-    }
-    return false;
-  } else {
-    if (error_msg != nullptr) {
-      *error_msg += "ERROR in parsing dep variable value: Unexpected model type " +
-                    Itoa(static_cast<int>(model_type)) + ".\n";
-    }
-    return false;
-  }
- 
-  return true;
+        model_type == ModelType::MODEL_TYPE_TIME_INDEPENDENT_INTERVAL_CENSORED) 
+	{
+		if (error_msg != nullptr)
+		{
+			*error_msg += "ERROR in parsing dep variable value: Unexpected model type "
+						"MODEL_TYPE_TIME_[IN]DEPENDENT_INTERVAL_CENSORED: the "
+						"ComputeRowDependentVariableValues() function, called by "
+						"StoreDataValuesInParams(), should not be used for "
+						"Interval-Censored NPMLE (rather, use PopulateSubjectInfo(), "
+						"perhaps via ReadTime[In]DepIntervalCensoredData::ReadFile(), "
+						"to parse Dependent (and independent) variable values.\n";
+		}
+		return false;
+	} 
+	else
+	{
+		if (error_msg != nullptr)
+		{
+			*error_msg += "ERROR in parsing dep variable value: Unexpected model type " + 
+				Itoa(static_cast<int>(model_type)) + ".\n";
+		}
+		return false;
+	}
+	return true;
 }
 
 bool ReadInput::StandardizeLinearTerms(
@@ -1187,13 +1224,14 @@ bool ReadInput::StoreDataValuesInParams(
     const bool is_simulated_data,
     const vector<string>& data_values_header,
     const vector<vector<DataHolder> >& data_values,
-    ModelAndDataParams* input) {
-  // Get a mapping from the variable title to the column in the input data
-  // that the title corresponds to.
-  map<string, int> name_to_column;
-  for (int i = 0; i < data_values_header.size(); ++i) {
-    name_to_column.insert(make_pair(data_values_header[i], i));
-  }
+    ModelAndDataParams* input) 
+{
+	// Get a mapping from the variable title to the column in the input data
+	// that the title corresponds to.
+	map<string, int> name_to_column;
+	for (int i = 0; i < data_values_header.size(); ++i) {
+		name_to_column.insert(make_pair(data_values_header[i], i));
+	}
 
   // Get a mapping from the original column index (from input data file)
   // to the column index (w.r.t. data_values). This will be needed to determine
@@ -1258,28 +1296,39 @@ bool ReadInput::StoreDataValuesInParams(
          << "this method from failing." << endl;
   }
 
-  // Get the set of variables found among the dependent term(s).
-  set<string> vars_in_dep_terms;
-  if (!ExtractVariablesFromExpression(
-          input->model_type_, input->model_lhs_,
-          &vars_in_dep_terms, &input->error_msg_)) {
-    return false;
-  }
-  // Pick out the sub-map of name_to_column that just contains info for
-  // dependent vars (i.e. those in LHS of model).
-  map<string, int> dep_var_name_to_column;
-  if (!is_simulated_data) {
-    for (const string& var_name : vars_in_dep_terms) {
-      int* col_index = FindOrNull(var_name, name_to_column);
-      if (col_index == nullptr) {
-        input->error_msg_ += "ERROR: Unable to find variable '" + var_name +
-                             "' (from the LHS of the model) among the titles "
-                             "on the header line of the input data file.\n";
-        return false;
-      }
-      dep_var_name_to_column.insert(make_pair(var_name, *col_index));
-    }
-  }
+	// Get the set of variables found among the dependent term(s).
+	set<string> vars_in_dep_terms;
+	if (!ExtractVariablesFromExpression(
+			input->model_type_, input->model_lhs_,
+			&vars_in_dep_terms, &input->error_msg_))
+	{
+		return false;
+	}
+	// Ran Tao added this IF condition because otherwise the left-truncation 
+	// time will not be considered as a dependent variable.
+	if (input->left_truncation_str_ != "")
+	{
+		vars_in_dep_terms.insert(input->left_truncation_str_);
+	}
+
+	// Pick out the sub-map of name_to_column that just contains info for
+	// dependent vars (i.e. those in LHS of model).
+	map<string, int> dep_var_name_to_column;
+	if (!is_simulated_data) 
+	{
+		for (const string& var_name : vars_in_dep_terms)
+		{
+			int* col_index = FindOrNull(var_name, name_to_column);
+			if (col_index == nullptr)
+			{
+				input->error_msg_ += "ERROR: Unable to find variable '" + var_name +
+									 "' (from the LHS of the model) among the titles "
+									 "on the header line of the input data file.\n";
+				return false;
+			}
+			dep_var_name_to_column.insert(make_pair(var_name, *col_index));
+		}
+	}
 
   // Get the set of variables found among the linear_terms.
   set<string> vars_in_linear_terms;
@@ -1475,26 +1524,28 @@ bool ReadInput::StoreDataValuesInParams(
   return true;
 }
 
-bool ReadInput::FillModelAndDataParams(ModelAndDataParams* params) {
-  if (params == nullptr) return false;
+bool ReadInput::FillModelAndDataParams(ModelAndDataParams* params)
+{
+	if (params == nullptr) return false;
 
-  // Fill Category (2) fields.
-  if (!ParseModelAndDataParams(params)) return false;
+	// Fill Category (2) fields.
+	if (!ParseModelAndDataParams(params)) return false;
 
-  // Fill Category (3) fields.
-  vector<string> data_values_header;
-  vector<vector<DataHolder>> data_values;
-  if (!ReadTableWithHeader::ReadDataFile(
-          params->file_, params->header_, params->input_cols_used_, params->var_params_,
-          &data_values_header, &data_values, &params->nominal_columns_and_values_,
-          &params->na_rows_and_columns_, &params->error_msg_)) {
-    return false;
-  }
+	// Fill Category (3) fields.
+	vector<string> data_values_header;
+	vector<vector<DataHolder>> data_values;
+	if (!ReadTableWithHeader::ReadDataFile(
+		params->file_, params->header_, params->input_cols_used_, params->var_params_,
+		&data_values_header, &data_values, &params->nominal_columns_and_values_,
+		&params->na_rows_and_columns_, &params->error_msg_)) 
+	{
+		return false;
+	}
 
-  // Fill Category (4) fields.
-  if (!StoreDataValuesInParams(data_values_header, data_values, params)) return false;
+	// Fill Category (4) fields.
+	if (!StoreDataValuesInParams(data_values_header, data_values, params)) return false;
 
-  return true;
+	return true;
 }
 
 }  // namespace file_reader_utils

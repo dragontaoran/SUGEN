@@ -1,5 +1,6 @@
 // Date: March 2015
 // Author: paulbunn@email.unc.edu (Paul Bunn)
+// Maintainer: r.tao@vanderbilt.edu (Ran Tao)
 
 #include "read_file_utils.h"
 
@@ -176,18 +177,22 @@ bool PrintDataToFile(
   return true;
 }
 
-void RemoveWindowsTrailingCharacters(string* input) {
-  if (input == nullptr) return;
-  if (input->length() > 0) {
-    if ((*input)[input->length() - 1] == 10) {
-      *input = input->substr(0, input->length() - 1);
-    }
-  }
-  if (input->length() > 0) {
-    if ((*input)[input->length() - 1] == 13) {
-      *input = input->substr(0, input->length() - 1);
-    }
-  }
+void RemoveWindowsTrailingCharacters(string* input)
+{
+	if (input == nullptr) return;
+	if (input->length() > 0)
+	{
+		if ((*input)[input->length() - 1] == 10) // "LF" in decimal = 10
+		{
+			*input = input->substr(0, input->length() - 1);
+		}
+	}
+	if (input->length() > 0) {
+		if ((*input)[input->length() - 1] == 13) // "CR" in decimal = 13
+		{
+			*input = input->substr(0, input->length() - 1);
+		}
+	}
 }
 
 string PrintModelAndDataParams(const ModelAndDataParams& params) {
@@ -1055,28 +1060,31 @@ bool ParseModel(
     const ModelType type, const vector<string>& header,
     DepVarDescription* model_lhs, Expression* model_rhs,
     bool* use_subgroup_as_covariate, set<int>* input_cols_used,
-    string* error_msg) {
-  if (model_lhs == nullptr || model_rhs == nullptr) return false;
-  set<int> nominal_columns;
-  if (!GetNominalColumnsFromTitles(header, &nominal_columns)) return false;
+    string* error_msg)
+{
+	if (model_lhs == nullptr || model_rhs == nullptr) return false;
+	set<int> nominal_columns;
+	if (!GetNominalColumnsFromTitles(header, &nominal_columns)) return false;
 
-  // Convert nominal_columns to the structure that ReadTableWithHeader::ParseModel
-  // requires.
-  map<int, set<string>> nominal_columns_and_values;
-  for (const int nominal_column : nominal_columns) {
-    nominal_columns_and_values.insert(make_pair(nominal_column, set<string>()));
-  }
+	// Convert nominal_columns to the structure that ReadTableWithHeader::ParseModel
+	// requires.
+	map<int, set<string>> nominal_columns_and_values;
+	for (const int nominal_column : nominal_columns)
+	{
+		nominal_columns_and_values.insert(make_pair(nominal_column, set<string>()));
+	}
 
-  // Parse passed-in model.
-  string temp_error_msg = "";
-  if (!ProcessUserEnteredModel(
-          model, type, model_lhs, model_rhs, &temp_error_msg)) {
-    if (error_msg != nullptr) {
-      *error_msg += "ERROR: Unable to parse model:\n" + model +
-                    "Error message:\n" + temp_error_msg + "\n";
-    }
-    return false;
-  }
+	// Parse passed-in model.
+	string temp_error_msg = "";
+	if (!ProcessUserEnteredModel(
+		model, type, model_lhs, model_rhs, &temp_error_msg))
+	{
+		if (error_msg != nullptr) {
+		  *error_msg += "ERROR: Unable to parse model:\n" + model +
+						"Error message:\n" + temp_error_msg + "\n";
+		}
+		return false;
+	}
 
   // Parse left-truncation column, for Cox.
   if (type == ModelType::MODEL_TYPE_RIGHT_CENSORED_SURVIVAL &&
@@ -1134,80 +1142,94 @@ bool ParseModel(
 
 bool ProcessUserEnteredModel(
     const string& model, const ModelType& model_type,
-    DepVarDescription* model_lhs, Expression* model_rhs, string* error_msg) {
-  // Sanity check input.
-  if (model_rhs == nullptr) {
-    if (error_msg != nullptr) {
-      *error_msg += "ERROR: NULL model_rhs. Check API in call "
-                    "to ProcessUserEnteredModel.\n";
-    }
-    return false;
-  }
+    DepVarDescription* model_lhs, Expression* model_rhs, string* error_msg)
+{
+	// Sanity check input.
+	if (model_rhs == nullptr)
+	{
+		if (error_msg != nullptr)
+		{
+			*error_msg += "ERROR: NULL model_rhs. Check API in call "
+							"to ProcessUserEnteredModel.\n";
+		}
+		return false;
+	}
 
-  // Simplify model by removing whitespace.
-  string parsed_model;
-  RemoveAllWhitespace(model, &parsed_model);
-  if (parsed_model.empty()) {
-    if (error_msg != nullptr) {
-      *error_msg += "ERROR: Empty model received from user input.\n";
-    }
-    return false;
-  }
+	// Simplify model by removing whitespace.
+	string parsed_model;
+	RemoveAllWhitespace(model, &parsed_model);
+	if (parsed_model.empty())
+	{
+		if (error_msg != nullptr)
+		{
+			*error_msg += "ERROR: Empty model received from user input.\n";
+		}
+		return false;
+	}
 
-  // Split model around the equality (separating (in)dependent variables).
-  vector<string> dep_indep_split;
-  Split(parsed_model, "=", &dep_indep_split);
-  bool has_rhs = true;
-  if (dep_indep_split.size() > 2) {
-    if (error_msg != nullptr) {
-      *error_msg += "ERROR: Input contains multiple '=' signs.\n";
-    }
-    return false;
-  }
-  if (dep_indep_split.size() == 1) {
-    // NOTE: We first aborted in this case, then we wanted to support
-    // Linear Models that have empty RHS (since Constant and Error terms
-    // are not explicitly written); and then finally there are some use
-    // cases (e.g. cox_compute_k_m_estimator_main.exe) that don't have a
-    // RHS at all. Thus, we don't abort here anymore.
-    /*
-    // There is one valid use-case for the size to not be 2: If we have a
-    // Linear Model, the RHS can be empty (just do constant term and error).
-    // Check if this is the case, otherwise abort.
-    if (model_type != ModelType::MODEL_TYPE_LINEAR ||
-        dep_indep_split.size() != 1 ||
-        !HasSuffixString(parsed_model, "=")) {
-      if (error_msg != nullptr) {
-        *error_msg += "ERROR: Input contains multiple '=' signs.\n";
-      }
-      return false;
-    } else {
-      has_rhs = false;
-    }
-    */
-    has_rhs = false;
-  }
+	// Split model around the equality (separating (in)dependent variables).
+	vector<string> dep_indep_split;
+	Split(parsed_model, "=", &dep_indep_split);
+	bool has_rhs = true;
+	if (dep_indep_split.size() > 2)
+	{
+		if (error_msg != nullptr)
+		{
+			*error_msg += "ERROR: Input contains multiple '=' signs.\n";
+		}
+		return false;
+	}
+	if (dep_indep_split.size() == 1) {
+		// NOTE: We first aborted in this case, then we wanted to support
+		// Linear Models that have empty RHS (since Constant and Error terms
+		// are not explicitly written); and then finally there are some use
+		// cases (e.g. cox_compute_k_m_estimator_main.exe) that don't have a
+		// RHS at all. Thus, we don't abort here anymore.
+		/*
+		// There is one valid use-case for the size to not be 2: If we have a
+		// Linear Model, the RHS can be empty (just do constant term and error).
+		// Check if this is the case, otherwise abort.
+		if (model_type != ModelType::MODEL_TYPE_LINEAR ||
+			dep_indep_split.size() != 1 ||
+			!HasSuffixString(parsed_model, "=")) {
+			if (error_msg != nullptr) {
+				*error_msg += "ERROR: Input contains multiple '=' signs.\n";
+			}
+			return false;
+		}
+		else
+		{
+			has_rhs = false;
+		}
+		*/
+		has_rhs = false;
+	}
 
-  // Parse Model LHS.
-  if (!ParseDependentTerm(dep_indep_split[0], model_type, model_lhs, error_msg)) { 
-    if (error_msg != nullptr) {
-      *error_msg += "ERROR in parsing LHS of model as an expression:\n\t" +
-                    dep_indep_split[0] + "\n";
-    }
-    return false;
-  }
+	// Parse Model LHS.
+	if (!ParseDependentTerm(dep_indep_split[0], model_type, model_lhs, error_msg))
+	{ 
+		if (error_msg != nullptr)
+		{
+			*error_msg += "ERROR in parsing LHS of model as an expression:\n\t" +
+							dep_indep_split[0] + "\n";
+		}
+		return false;
+	}
 
-  // Parse Model RHS.
-  if (has_rhs) {
-    if (!ParseExpression(dep_indep_split[1], false, model_rhs)) {
-      if (error_msg != nullptr) {
-        *error_msg += "ERROR in parsing RHS of model as an expression:\n\t" +
-                      dep_indep_split[1] + "\n";
-      }
-      return false;
-    }
-  }
-  return true;
+	// Parse Model RHS.
+	if (has_rhs)
+	{
+		if (!ParseExpression(dep_indep_split[1], false, model_rhs))
+		{
+			if (error_msg != nullptr)
+			{
+				*error_msg += "ERROR in parsing RHS of model as an expression:\n\t" +
+							  dep_indep_split[1] + "\n";
+			}
+			return false;
+		}
+	}
+	return true;
 }
 
 
@@ -1519,90 +1541,99 @@ bool ParseDependentTermTimeIndependentNpmleModel(
   return true;
 }
 
-bool GetTitles(
-    const string& title_line, const string& delimiter,
-    vector<string>* titles, set<int>* nominal_columns) {
-  if (titles == nullptr) return false;
+bool GetTitles(const string& title_line, const string& delimiter,
+	vector<string>* titles, set<int>* nominal_columns)
+{
+	if (titles == nullptr) return false;
 
-  titles->clear();
-  Split(
-      title_line, delimiter, false /* Do not collapse consecutive delimiters */,
-      titles);
+	titles->clear();
+	Split(title_line, delimiter, false /* Do not collapse consecutive delimiters */, titles);
 
-  // Go through all titles, looking for nomial columns (based on '$' suffix).
-  for (int column_num = 0; column_num < titles->size(); ++column_num) {
-    const string& current_title = (*titles)[column_num];
-    if (nominal_columns != nullptr && current_title.length() > 0 &&
-        current_title.substr(current_title.length() - 1) == "$") {
-      nominal_columns->insert(column_num);
-    }
-  }
+	// Go through all titles, looking for nomial columns (based on '$' suffix).
+	for (int column_num = 0; column_num < titles->size(); ++column_num)
+	{
+		const string& current_title = (*titles)[column_num];
+		if (nominal_columns != nullptr && current_title.length() > 0 &&
+			current_title.substr(current_title.length() - 1) == "$")
+		{
+			nominal_columns->insert(column_num);
+		}
+	}
 
-  // Sanity check that titles are distinct.
-  map<string, int> names;
-  for (int i = 0; i < titles->size(); ++i) {
-    if (names.find((*titles)[i]) != names.end()) return false;
-    names.insert(make_pair((*titles)[i], i));
-  }
+	// Sanity check that titles are distinct.
+	map<string, int> names;
+	for (int i = 0; i < titles->size(); ++i)
+	{
+		if (names.find((*titles)[i]) != names.end()) return false;
+		names.insert(make_pair((*titles)[i], i));
+	}
 
-  return true;
+	return true;
 }
 
-bool GetHeader(
-    const FileInfo& file_info, vector<string>* header, string* error_msg) {
-  if (header == nullptr) {
-    if (error_msg != nullptr) {
-      *error_msg += "ERROR in GetHeader: Null input.\n";
-    }
-    return false;
-  }
+bool GetHeader(const FileInfo& file_info, vector<string>* header, string* error_msg)
+{
+	if (header == nullptr)
+	{
+		if (error_msg != nullptr)
+		{
+			*error_msg += "ERROR in GetHeader: Null input.\n";
+		}
+		return false;
+	}
 
-  const string& filename = file_info.name_;
-  const string& delimiter = file_info.delimiter_;
-  const string& comment_char = file_info.comment_char_;
-  if (delimiter.empty()) {
-    if (error_msg != nullptr) {
-      *error_msg += "ERROR in Reading data file Header: No column delimiter specified.\n";
-    }
-    return false;
-  }
+	const string& filename = file_info.name_;
+	const string& delimiter = file_info.delimiter_;
+	const string& comment_char = file_info.comment_char_;
+	if (delimiter.empty())
+	{
+		if (error_msg != nullptr)
+		{
+			*error_msg += "ERROR in Reading data file Header: No column delimiter specified.\n";
+		}
+		return false;
+	}
 
-  // Open input file.
-  ifstream input_file(filename.c_str());
-  if (!input_file.is_open()) {
-    if (error_msg != nullptr) {
-      *error_msg += "ERROR: Unable to find data file '" + filename +
-                    "'. Make sure that it is present in your current directory.\n";
-    }
-    return false;
-  }
+	// Open input file.
+	ifstream input_file(filename.c_str());
+	if (!input_file.is_open())
+	{
+		if (error_msg != nullptr)
+		{
+		  *error_msg += "ERROR: Unable to find data file '" + filename +
+						"'. Make sure that it is present in your current directory.\n";
+		}
+		return false;
+	}
   
-  // Read Title line of input file.
-  string title_line;
-  bool found_title_line = false;
-  while (!found_title_line && getline(input_file, title_line)) {
-    if (comment_char.empty() ||
-        !HasPrefixString(title_line, comment_char)) {
-      found_title_line = true;
-    }
-  }
-  if (!found_title_line) {
-    if (error_msg != nullptr) {
-      *error_msg += "ERROR in reading data file '" + filename +
-                    "': file is empty.\n";
-    }
-    return false;
-  }
-  RemoveWindowsTrailingCharacters(&title_line);
-  set<int> nominal_columns;
-  if (!GetTitles(title_line, delimiter, header, &nominal_columns)) {
-    if (error_msg != nullptr) {
-      *error_msg += "ERROR parsing header line in data file '" + filename +
-                    "': Improper file format.\n";
-    }
-    return false;
-  }
-  return true;
+	// Read Title line of input file.
+	string title_line;
+	bool found_title_line = false;
+	while (!found_title_line && getline(input_file, title_line))
+	{
+		if (comment_char.empty() || !HasPrefixString(title_line, comment_char))
+		{
+			found_title_line = true;
+		}
+	}
+	if (!found_title_line) 
+	{
+		if (error_msg != nullptr)
+		{
+			*error_msg += "ERROR in reading data file '" + filename + "': file is empty.\n";
+		}
+		return false;
+	}
+	RemoveWindowsTrailingCharacters(&title_line);
+	set<int> nominal_columns;
+	if (!GetTitles(title_line, delimiter, header, &nominal_columns))
+	{
+		if (error_msg != nullptr) {
+		  *error_msg += "ERROR parsing header line in data file '" + filename + "': Improper file format.\n";
+		}
+		return false;
+	}
+	return true;
 }
 
 string GetDependentVarString(
@@ -1696,48 +1727,49 @@ void PrintFinalModel(
 }
 
 bool ParseModelAndDataParams(ModelAndDataParams* params) {
-  if (params == nullptr) {
-    return false;
-  }
+	if (params == nullptr) 
+	{
+		return false;
+	}
   
-  // Header.
-  if (params->header_.empty() && !params->file_.name_.empty() &&
-       !GetHeader(params->file_, &params->header_, &params->error_msg_)) {
-    params->error_msg_ += "ERROR in Parsing arguments: Unable to get header.\n";
-    return false;
-  }
+	// Header.
+	if (params->header_.empty() && !params->file_.name_.empty() && 
+		!GetHeader(params->file_, &params->header_, &params->error_msg_))
+	{
+		params->error_msg_ += "ERROR in Parsing arguments: Unable to get header.\n";
+		return false;
+	}
 
-  // Nominal Columns.
-  if (!GetNominalColumnsFromTitles(params->header_, &params->nominal_columns_)) {
-    params->error_msg_ +=
-        "ERROR in Parsing arguments: Unable to get nominal columns.\n";
-    return false;
-  }
+	// Nominal Columns.
+	if (!GetNominalColumnsFromTitles(params->header_, &params->nominal_columns_))
+	{
+		params->error_msg_ += "ERROR in Parsing arguments: Unable to get nominal columns.\n";
+		return false;
+	}
 
-  // Update ModelType, if appropriate. NOTE: Must do this before parsing model,
-  // as in some cases (ModelType == MODEL_TYPE_INTERVAL_CENSORED), the final
-  // model type will be determined by the presence/absence of id_col (i.e. that
-  // determines whether data is time-dependent or time-independent).
-  if (params->model_type_ == ModelType::MODEL_TYPE_INTERVAL_CENSORED) {
-    if (params->id_str_.empty()) {
-      params->model_type_ =
-          ModelType::MODEL_TYPE_TIME_INDEPENDENT_INTERVAL_CENSORED;
-    } else {
-      params->model_type_ =
-          ModelType::MODEL_TYPE_TIME_DEPENDENT_INTERVAL_CENSORED;
-    }
-  }
+	// Update ModelType, if appropriate. NOTE: Must do this before parsing model,
+	// as in some cases (ModelType == MODEL_TYPE_INTERVAL_CENSORED), the final
+	// model type will be determined by the presence/absence of id_col (i.e. that
+	// determines whether data is time-dependent or time-independent).
+	if (params->model_type_ == ModelType::MODEL_TYPE_INTERVAL_CENSORED) {
+		if (params->id_str_.empty()) {
+			params->model_type_ = ModelType::MODEL_TYPE_TIME_INDEPENDENT_INTERVAL_CENSORED;
+		} else {
+			params->model_type_ = ModelType::MODEL_TYPE_TIME_DEPENDENT_INTERVAL_CENSORED;
+		}
+	}
 
-  // Model.
-  if (!params->model_str_.empty() &&
-      !ParseModel(params->model_str_, params->left_truncation_str_,
-                  params->model_type_, params->header_,
-                  &params->model_lhs_, &params->model_rhs_,
-                  &params->use_subgroup_as_covariate_,
-                  &params->input_cols_used_, &params->error_msg_)) {
-    params->error_msg_ += "ERROR in Parsing arguments: Unable to parse model.\n";
-    return false;
-  }
+	// Model.
+	if (!params->model_str_.empty() &&
+		!ParseModel(params->model_str_, params->left_truncation_str_, 
+			params->model_type_, params->header_,
+			&params->model_lhs_, &params->model_rhs_,
+			&params->use_subgroup_as_covariate_,
+			&params->input_cols_used_, &params->error_msg_))
+	{
+		params->error_msg_ += "ERROR in Parsing arguments: Unable to parse model.\n";
+		return false;
+	}
 
   // Subgroup(s).
   if (!params->subgroup_str_.empty() &&
@@ -1851,31 +1883,32 @@ bool ComputeRowCovariateValues(
   return true;
 }
 
-bool GetVariableValuesFromDataRow(
+bool GetVariableValuesFromDataRow (
     const int subgroup_index,
     const vector<vector<string>>& subgroups,
     const set<string> na_strings,
     const map<int, set<string> >& nominal_columns,
     const map<string, int>& name_to_column,
     const vector<DataHolder>& sample_values,
-    bool* is_na_row, map<string, double>* var_values, string* error_msg) {
-  // First, go through all subgroups, determining which one this row
-  // (as represented by 'sample_values') belongs to. Put a '1' in
-  // the corresponding subgroup indicator, and '0's n the others.
-  if (subgroup_index >= 0) {
-    // IMPORTANT: This assumes that nominal variables are expanded into
-    // k - 1 covariates by skipping the first distinct value (in this case,
-    // Subgroup_0), and then setting the k - 1 covariates as I_Subgroup_k.
-    for (int i = 1; i < subgroups.size(); ++i) {
-      const vector<string>& subgroup_i = subgroups[i];
-      // IMPORTANT: the (formation of the) string below should exactly match
-      // how it will appear (as a variable name) in an Expression; in particular,
-      // this string should match the corresponding string in ExpandExpression.
-      var_values->insert(make_pair(
-          "I_(Subgroup=" + Join(subgroup_i, ",") + ")",
-          (subgroup_index == i) ? 1.0 : 0.0));
-    }
-  }
+    bool* is_na_row, map<string, double>* var_values, string* error_msg)
+{
+	// First, go through all subgroups, determining which one this row
+	// (as represented by 'sample_values') belongs to. Put a '1' in
+	// the corresponding subgroup indicator, and '0's n the others.
+	if (subgroup_index >= 0) {
+	// IMPORTANT: This assumes that nominal variables are expanded into
+	// k - 1 covariates by skipping the first distinct value (in this case,
+	// Subgroup_0), and then setting the k - 1 covariates as I_Subgroup_k.
+	for (int i = 1; i < subgroups.size(); ++i) {
+	  const vector<string>& subgroup_i = subgroups[i];
+	  // IMPORTANT: the (formation of the) string below should exactly match
+	  // how it will appear (as a variable name) in an Expression; in particular,
+	  // this string should match the corresponding string in ExpandExpression.
+	  var_values->insert(make_pair(
+		  "I_(Subgroup=" + Join(subgroup_i, ",") + ")",
+		  (subgroup_index == i) ? 1.0 : 0.0));
+	}
+	}
 
   // Go though all variables, adding their value. In particular, for
   // numeric variables, just read their value. For non-numeric (nominal)
@@ -2644,7 +2677,8 @@ bool ExtractVariablesFromExpression(
     const ModelType& model_type,
     const DepVarDescription& model_lhs,
     const set<string>& var_names,
-    set<string>* vars_in_expression, string* error_msg) {
+    set<string>* vars_in_expression, string* error_msg)
+{
   if (model_type == ModelType::MODEL_TYPE_LINEAR) {
     return ExtractVariablesFromExpression(
         model_lhs.model_lhs_linear_, var_names, vars_in_expression, error_msg);

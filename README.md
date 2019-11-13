@@ -437,8 +437,11 @@ covariate in the model.
 * 8.9 (released on July 27, 2018)
 	1. Updated libStatGen to v1.0.14 and Eigen to v3.3.4.
 
-* 8.10 (current version, released on June 30, 2019)
+* 8.10 (released on June 30, 2019)
 	1. Fixed a bug in the data preperation function for score tests in proportional hazards regression.
+
+* 8.11 (current version, released on November 12, 2019)
+	1. Fixed a bug in reading the left-truncation time.
 
 # CONTACT
 For questions, please contact [Ran Tao](https://sites.google.com/site/dragontaoran/home).

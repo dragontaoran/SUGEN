@@ -470,10 +470,11 @@ int ParseInt(const char* input, const int start_byte) {
 // ============================ END NUMERIC ================================== 
 
 // =============================== STRIP =====================================
-bool HasPrefixString(const string& input, const string& to_match) {
-  if (to_match.empty()) return true;
-  if (input.empty() || input.length() < to_match.length()) return false;
-  return input.substr(0, to_match.length()) == to_match;
+bool HasPrefixString(const string& input, const string& to_match) 
+{
+	if (to_match.empty()) return true;
+	if (input.empty() || input.length() < to_match.length()) return false;
+	return input.substr(0, to_match.length()) == to_match;
 }
 
 bool StripPrefixString(
@@ -499,9 +500,9 @@ string StripPrefixString(
 }
 
 bool HasSuffixString(const string& input, const string& to_match) {
-  if (to_match.empty()) return true;
-  if (input.empty() || input.length() < to_match.length()) return false;
-  return input.substr(input.length() - to_match.length()) == to_match;
+	if (to_match.empty()) return true;
+	if (input.empty() || input.length() < to_match.length()) return false;
+	return input.substr(input.length() - to_match.length()) == to_match;
 }
 
 bool StripSuffixString(
@@ -611,13 +612,15 @@ string RemoveExtraWhitespace(const string& input) {
   return output;
 }
 
-void RemoveAllWhitespace(const string& input, string* output) {
-  if (output == NULL) return;
-  output->clear();
-  for (unsigned int i = 0; i < input.length(); ++i) {
-    const char c = input[i];
-    if (!::isspace(c)) (*output) += c;
-  }
+void RemoveAllWhitespace(const string& input, string* output)
+{
+	if (output == NULL) return;
+	output->clear();
+	for (unsigned int i = 0; i < input.length(); ++i)
+	{
+		const char c = input[i];
+		if (!::isspace(c)) (*output) += c;
+	}
 }
 
 string RemoveAllWhitespace(const string& input) {

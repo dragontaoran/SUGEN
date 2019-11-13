@@ -376,9 +376,9 @@ inline bool GetVariableValuesFromDataRow(
     const map<string, int>& name_to_column,
     const vector<DataHolder>& sample_values,
     bool* is_na_row, map<string, double>* var_values, string* error_msg) {
-  return GetVariableValuesFromDataRow(
-      -1, vector<vector<string>>(), na_strings, nominal_columns, name_to_column,
-      sample_values, is_na_row, var_values, error_msg);
+	return GetVariableValuesFromDataRow(
+		-1, vector<vector<string>>(), na_strings, nominal_columns, name_to_column,
+		sample_values, is_na_row, var_values, error_msg);
 }
 // Same as above, without Subgroup and na_strings.
 inline bool GetVariableValuesFromDataRow(
@@ -386,9 +386,9 @@ inline bool GetVariableValuesFromDataRow(
     const map<string, int>& name_to_column,
     const vector<DataHolder>& sample_values,
     map<string, double>* var_values, string* error_msg) {
-  return GetVariableValuesFromDataRow(
-      set<string>(), nominal_columns, name_to_column, sample_values,
-      nullptr, var_values, error_msg);
+	return GetVariableValuesFromDataRow(
+		set<string>(), nominal_columns, name_to_column, sample_values,
+		nullptr, var_values, error_msg);
 }
 // Same as above, with slightly different API (nominal columns indexed
 // by Variable Name instead of Variable Column).
